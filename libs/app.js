@@ -1,4 +1,4 @@
-//const VegaMQTT = require('./vega_mqtt.js');
+const VegaMQTT = require('./vega_mqtt.js');
 const VegaWS = require('./vega_ws.js');
 const Config = require('./config.js');
 //const Parser = require('./parser.js');
@@ -12,7 +12,25 @@ let waitingReboot = false;
 //------------------------------------------------------------------------------
 //Логика
 //------------------------------------------------------------------------------
-
+function send(mess,topic)
+{
+  if(!mess)
+  {
+    if(config.debugMOD) console.log('Failed to send message MQTT, data not valid');
+    return;
+  }
+  if(!topic)
+  {
+    if(config.debugMOD) console.log('Failed to send message MQTT, topic not valid');
+    return;
+  }
+  if(!mqtt.status)
+  {
+    if(config.debugMOD) console.log('Failed to send message MQTT, MQTT disconnect');
+    return;
+  }
+  mqtt.send_json(mess,topic);
+}
 //------------------------------------------------------------------------------
 //ws send message
 //------------------------------------------------------------------------------
@@ -42,7 +60,7 @@ function rx(obj)
     let data = obj.data;
     let devEui = obj.devEui;
     let port = obj.port;
-    console.log(obj);
+    send(obj,'/IotVegaServer/rx/'+devEui);
   }
   catch (e)
   {
@@ -68,10 +86,6 @@ function auth_resp(obj)
 {
   if(obj.status)
   {
-    for(let i = 0 ; i<obj.command_list.length;i++)
-    {
-      premission[obj.command_list[i]] = true;
-    }
     statusAuth = true;
     console.log('Success authorization on server iotvega');
   }
@@ -107,7 +121,7 @@ function run(conf)
     try
     {
       initWS();
-
+      mqtt = new VegaMQTT(config.mqtt);
     }
     catch (e)
     {

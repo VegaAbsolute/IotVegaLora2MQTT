@@ -24,12 +24,12 @@ class Config
   //setters-------------------------
   set mqtt_address(val)
   {
-    this._ws.address = val;
+    this._mqtt.url = val;
   }
-  set mqtt_port(val)
-  {
-    this._ws.port = val;
-  }
+  // set mqtt_port(val)
+  // {
+  //   this._ws.port = val;
+  // }
 
   set ws_user(val)
   {
@@ -48,6 +48,10 @@ class Config
     this._debugMOD.status = val;
   }
   //getters-------------------------
+  get mqtt()
+  {
+    return this._mqtt.url;
+  }
   get ws()
   {
     return this._ws.url;
