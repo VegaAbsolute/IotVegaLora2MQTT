@@ -1,0 +1,145 @@
+//const VegaMQTT = require('./vega_mqtt.js');
+const VegaWS = require('./vega_ws.js');
+const Config = require('./config.js');
+//const Parser = require('./parser.js');
+const { exec } = require('child_process');
+const CronJob = require('cron').CronJob;
+let config = {};
+let statusAuth = false;
+let ws = {};
+let mqtt = {};
+let waitingReboot = false;
+//------------------------------------------------------------------------------
+//Логика
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+//ws send message
+//------------------------------------------------------------------------------
+function auth_req()
+{
+  let message = {
+      cmd:'auth_req',
+      login:config.loginWS,
+      password:config.passwordWS
+    };
+    ws.send_json(message);
+    return;
+}
+//------------------------------------------------------------------------------
+//commands iotvega.com
+//------------------------------------------------------------------------------
+function rx(obj)
+{
+  if(!(obj.type&&(obj.type.indexOf('UNCONF_UP')>-1||obj.type.indexOf('CONF_UP')>-1))) return;
+  try
+  {
+    //cmd      gatewayId   data       rssi
+    //devEui   ack         macData    snr
+    //appEui   fcnt        freq       type
+    //ts       port        dr         packetStatus?
+    let timeServerMs = obj.ts;
+    let data = obj.data;
+    let devEui = obj.devEui;
+    let port = obj.port;
+    console.log(obj);
+  }
+  catch (e)
+  {
+    console.error(e);
+  }
+  finally
+  {
+    return;
+  }
+}
+function free()
+{
+  if(waitingReboot)
+  {
+    emergencyExit();
+  }
+}
+function emergencyExit()
+{
+  process.exit(1);
+}
+function auth_resp(obj)
+{
+  if(obj.status)
+  {
+    for(let i = 0 ; i<obj.command_list.length;i++)
+    {
+      premission[obj.command_list[i]] = true;
+    }
+    statusAuth = true;
+    console.log('Success authorization on server iotvega');
+  }
+  else
+  {
+    console.log('Not successful authorization on server iotvega');
+    emergencyExit();
+  }
+}
+//------------------------------------------------------------------------------
+//initalization app
+//------------------------------------------------------------------------------
+function initWS()
+{
+  ws = new VegaWS(config.ws);
+  ws.on('run',auth_req);
+  ws.on('auth_resp',auth_resp);
+  ws.on('rx',rx);
+}
+function run(conf)
+{
+  config = conf;
+  if(config.valid())
+  {
+    if(config.auto_update)
+    {
+      new CronJob({
+        cronTime: '*/1 * * * *',
+        onTick: updating,
+        start: true,
+      });
+    }
+    try
+    {
+      initWS();
+
+    }
+    catch (e)
+    {
+      console.log('Initializing the application was a mistake');
+      console.error(e);
+      emergencyExit();
+    }
+  }
+  return;
+}
+function updating()
+{
+    //тут нужно проверить что программа не чем не занята
+  exec('"git" pull', (err, stdout, stderr) => {
+    if(stdout&&(stdout.indexOf('Already up to date')>-1||stdout.indexOf('Already up-to-date')>-1)||stdout.indexOf('Уже обновлено')>-1)
+    {
+      if(config.debugMOD) console.log('Updates not detected');
+    }
+    else if (err) {
+      console.log(err);
+      exec('"git" reset --hard HEAD', (err, stdout, stderr) => {
+        if(config.debugMOD) console.log('Error updating IotVegaNotifier, restart',err);
+        emergencyExit();
+      });
+    }
+    else
+    {
+      if(config.debugMOD) console.log('The IotVegaNotifier is updated, restart',stdout);
+      waitingReboot = true;
+      emergencyExit();
+    }
+  });
+}
+module.exports.config = config;
+module.exports.run = run;
