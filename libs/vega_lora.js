@@ -1,4 +1,4 @@
-const converter = require('vega_converter.js');
+const converter = require('./vega_converter.js');
 function parseLM1(pack)
 {
   let res = {valid:false};
