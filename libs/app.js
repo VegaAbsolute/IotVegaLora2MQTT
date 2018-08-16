@@ -1,7 +1,7 @@
 const VegaMQTT = require('./vega_mqtt.js');
 const VegaWS = require('./vega_ws.js');
 const Config = require('./config.js');
-//const Parser = require('./parser.js');
+const VegaLora = require('./vega_lora.js');
 const { exec } = require('child_process');
 const CronJob = require('cron').CronJob;
 let config = {};
@@ -52,15 +52,9 @@ function rx(obj)
   if(!(obj.type&&(obj.type.indexOf('UNCONF_UP')>-1||obj.type.indexOf('CONF_UP')>-1))) return;
   try
   {
-    //cmd      gatewayId   data       rssi
-    //devEui   ack         macData    snr
-    //appEui   fcnt        freq       type
-    //ts       port        dr         packetStatus?
-    let timeServerMs = obj.ts;
-    let data = obj.data;
-    let devEui = obj.devEui;
-    let port = obj.port;
-    send(obj,'/IotVegaServer/rx/'+devEui);
+    let message = VegaLora.parse(obj);
+    console.log(message);
+    // send(obj,'/IotVegaServer/rx/'+devEui);
   }
   catch (e)
   {
