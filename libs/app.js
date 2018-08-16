@@ -53,8 +53,7 @@ function rx(obj)
   try
   {
     let message = VegaLora.parse(obj);
-    console.log(message);
-    // send(obj,'/IotVegaServer/rx/'+devEui);
+    send(message,'/IotVegaServer/'+message.deviceInfo.deviceModel+'/'+message.deviceInfo.devEui);
   }
   catch (e)
   {

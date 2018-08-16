@@ -1,100 +1,147 @@
 const converter = require('./vega_converter.js');
-function parseLM1(pack)
+function parseLM1(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseSS0101(pack)
+function parseSS0101(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseMS0101(pack)
+function parseMS0101(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseAS0101(pack)
+function parseAS0101(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseMC0101(pack)
+function parseMC0101(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseTC11(pack)
+function parseTC11(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseSEEB(pack)
+function parseSEEB(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseSEEB(pack)
+function parseSEEB(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseSVE1(pack)
+function parseSVE1(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseSH1(pack)
+function parseSH1(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseGM2(pack)
+function parseGM2(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseTD11(pack)
+function parseTD11(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseTP11(pack)
+function parseTP11(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseMBUS2(pack)
+function parseMBUS2(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseMBUS1(pack)
+function parseMBUS1(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseSI21(pack)
+function parseSI11_SI21(bytes)
+{
+  let res = {valid:true};
+  res.packetType = parseInt(bytes[0],16);
+  switch (res.packetType)
+  {
+    case 1:
+    {
+      res.packetType = 'regular';
+      res.battery = converter.bytesToInt([bytes[1]]);
+      res.settings = converter.bytesToSettingsSI(bytes[2]);
+      res.time = converter.bytesToInt([bytes[3],bytes[4],bytes[5],bytes[6]]);
+      res.temperature = converter.bytesToInt([bytes[7]]);
+      res.input1 = converter.bytesToInt([bytes[8],bytes[9],bytes[10],bytes[11]]);
+      res.input2 = converter.bytesToInt([bytes[12],bytes[13],bytes[14],bytes[15]]);
+      res.input3 = converter.bytesToInt([bytes[16],bytes[17],bytes[18],bytes[19]]);
+      res.input4 = converter.bytesToInt([bytes[20],bytes[21],bytes[22],bytes[23]]);
+      break;
+    }
+    case 2:
+    {
+      res.packetType = 'alarm';
+      res.battery = converter.bytesToInt([bytes[1]]);
+      res.settings = converter.bytesToSettingsSI(bytes[2]);
+      res.alarmOnInput = converter.bytesToInt([bytes[3]]);
+      res.input1 = converter.bytesToInt([bytes[4],bytes[5],bytes[6],bytes[7]]);
+      res.input2 = converter.bytesToInt([bytes[8],bytes[9],bytes[10],bytes[11]]);
+      res.input3 = converter.bytesToInt([bytes[12],bytes[13],bytes[14],bytes[15]]);
+      res.input4 = converter.bytesToInt([bytes[16],bytes[17],bytes[18],bytes[19]]);
+      break;
+    }
+    case 255:
+    {
+      res.packetType = 'timeCorrectionReq';
+      res.time = converter.bytesToInt([bytes[1],bytes[2],bytes[3],bytes[4]]);
+      break;
+    }
+    default:
+    {
+      res.valid = false;
+      break;
+    }
+  }
+  for(var key in res)
+  {
+    if(res[key]===null)
+    {
+      res.valid = false;
+    }
+  }
+  return res;
+}
+function parseSI13(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseSI13(pack)
+function parseSI11(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseSI11(pack)
+function parseSI12(bytes)
 {
   let res = {valid:false};
   return res;
 }
-function parseSI12(pack)
-{
-  let res = {valid:false};
-  return res;
-}
-function parseTL11(pack)
+function parseTL11(bytes)
 {
   let res = {valid:false};
   return res;
@@ -102,8 +149,23 @@ function parseTL11(pack)
 function parse(obj)
 {
   let result = {};
-  //Заполняем результат известными данными
-  result = obj;
+  var parsedDate = {valid:false};
+  result.deviceInfo = {
+    devEui:obj.devEui,
+    appEui:obj.appEui
+  };
+  result.networkInfo = {
+    ts:obj.ts,
+    ack:obj.ack,
+    dr:obj.dr,
+    fcnt:obj.fcnt,
+    freq:obj.freq,
+    gatewayId:obj.gatewayId,
+    port:obj.port,
+    rssi:obj.ts,
+    snr:obj.snr,
+    type:obj.type,
+  };
   //начинаем парсить данные
   try
   {
@@ -111,144 +173,135 @@ function parse(obj)
     let bytes = converter.stringToBytes(obj.data);
     //Приводим appEui к верхнему регистру
     let appEui = obj.appEui.toLocaleUpperCase();
-    var parsedDate = {valid:false};
     //В зависимости от appEui определяем что за устройство
     switch (appEui)
     {
       case '76656761544C3131':
       {
-        result.deviceType = 'TL_11';
+        result.deviceInfo.deviceModel = 'TL_11';
         parsedDate = parseTL11(bytes);
         break;
       }
       case '7665676173693132':
       {
-        result.deviceType = 'SI_12';
+        result.deviceInfo.deviceModel = 'SI_12';
         parsedDate = parseSI12(bytes);
         break;
       }
       case '7665676173693131':
       {
-        result.deviceType = 'SI_11';
-        parsedDate = parseSI11(bytes);
+        result.deviceInfo.deviceModel = 'SI_11';
+        parsedDate = parseSI11_SI21(bytes);
         break;
       }
       case '7665676173693133':
       {
-        result.deviceType = 'SI_13';
+        result.deviceInfo.deviceModel = 'SI_13';
         parsedDate = parseSI13(bytes);
         break;
       }
       case '7665676173693231':
       {
-        result.deviceType = 'SI_21';
-        parsedDate = parseSI21(bytes);
+        result.deviceInfo.deviceModel = 'SI_21';
+        parsedDate = parseSI11_SI21(bytes);
         break;
       }
       case '4D2D425553203120':
       {
-        result.deviceType = 'M_BUS_1';
+        result.deviceInfo.deviceModel = 'M_BUS_1';
         parsedDate = parseMBUS1(bytes);
         break;
       }
       case '4D2D425553203220':
       {
-        result.deviceType = 'M_BUS_2';
+        result.deviceInfo.deviceModel = 'M_BUS_2';
         parsedDate = parseMBUS2(bytes);
         break;
       }
       case '7665676174703131':
       {
-        result.deviceType = 'TP_11';
+        result.deviceInfo.deviceModel = 'TP_11';
         parsedDate = parseTP11(bytes);
         break;
       }
       case '7665676174643131':
       {
-        result.deviceType = 'TD_11';
+        result.deviceInfo.deviceModel = 'TD_11';
         parsedDate = parseTD11(bytes);
         break;
       }
       case '76656761474D2D32':
       {
-        result.deviceType = 'GM_2';
+        result.deviceInfo.deviceModel = 'GM_2';
         parsedDate = parseGM2(bytes);
         break;
       }
       case '7665676173483031':
       {
-        result.deviceType = 'SH_1';
+        result.deviceInfo.deviceModel = 'SH_1';
         parsedDate = parseSH1(bytes);
         break;
       }
       case '7665676153564531':
       {
-        result.deviceType = 'SVE_1';
+        result.deviceInfo.deviceModel = 'SVE_1';
         parsedDate = parseSVE1(bytes);
         break;
       }
       case '7665676153454231':
       {
-        result.deviceType = 'SEEB_1_SPBZIP';
+        result.deviceInfo.deviceModel = 'SEEB_1_SPBZIP';
         parsedDate = parseSEEB(bytes);
         break;
       }
       case '5345454220312020':
       {
-        result.deviceType = 'SEEB_2_MERCURY';
+        result.deviceInfo.deviceModel = 'SEEB_2_MERCURY';
         parsedDate = parseSEEB(bytes);
         break;
       }
       case '7665676173693131':
       {
-        result.deviceType = 'TC_11';
+        result.deviceInfo.deviceModel = 'TC_11';
         parsedDate = parseTC11(bytes);
         break;
       }
       case '76616D6330313031':
       {
-        result.deviceType = 'SMART_MC_0101';
+        result.deviceInfo.deviceModel = 'SMART_MC_0101';
         parsedDate = parseMC0101(bytes);
         break;
       }
       case '7661616330313031':
       {
-        result.deviceType = 'SMART_AS_0101';
+        result.deviceInfo.deviceModel = 'SMART_AS_0101';
         parsedDate = parseAS0101(bytes);
         break;
       }
       case '766567614D533031':
       {
-        result.deviceType = 'SMART_MS_0101';
+        result.deviceInfo.deviceModel = 'SMART_MS_0101';
         parsedDate = parseMS0101(bytes);
         break;
       }
       case '7665676153533031':
       {
-        result.deviceType = 'SMART_SS_0101';
+        result.deviceInfo.deviceModel = 'SMART_SS_0101';
         parsedDate = parseSS0101(bytes);
         break;
       }
       case '7665676153533031':
       {
-        result.deviceType = 'LM_1';
+        result.deviceInfo.deviceModel = 'LM_1';
         parsedDate = parseLM1(bytes);
         break;
       }
       default:
       {
         //Неизвестное устройство
-        result.deviceType = 'unknown';
+        result.deviceInfo.deviceModel = 'unknown';
         parsedDate.valid = false;
         break;
-      }
-    }
-    //В случае если получилось распарсить пакет, записываем в результат
-    if(parsedDate.valid)
-    {
-      for(var key in parsedDate)
-      {
-        if(key!='valid') result[key] = parsedDate[key];
       }
     }
   }
@@ -258,6 +311,17 @@ function parse(obj)
   }
   finally
   {
+    //В случае если получилось распарсить пакет, записываем в результат
+    if(parsedDate.valid)
+    {
+      result.devicePayload = {
+        rawData:obj.data
+      };
+      for(var key in parsedDate)
+      {
+        if(key!='valid'&&key!='deviceModel') result.devicePayload[key] = parsedDate[key];
+      }
+    }
     return result;
   }
 }
