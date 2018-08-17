@@ -9,6 +9,7 @@
   "scripts": {
     "prestart": "git pull && npm install",
     "start": "node index.js",
+    "preinstall":"npm install pm2 -g",
     "postinstall": "node configuring.js",
     "prerestart": "npm install"
   },
