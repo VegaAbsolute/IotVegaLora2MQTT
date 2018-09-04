@@ -17,47 +17,47 @@ Applications for receiving data from the IotVega server, parse data and sending 
 - SI-21
 ## Message structure Description
 #### Topics
-- /IotVegaServer/# -> All messages from the application Iotvega Lora2mqtt
-- /IotVegaServer/modalDevice/# -> All messages from the application Iotvega Lora2mqtt by modal Device (Possible device models are presented below, For more information, see "Possible device models")
-- /IotVegaServer/modalDevice/devEui -> All messages from a specific device. Where DevEui - DevEui of your device.
+- /IotVegaServer/# - All messages from the application Iotvega Lora2mqtt
+- /IotVegaServer/modalDevice/# - All messages from the application Iotvega Lora2mqtt by modal Device (Possible device models are presented below, For more information, see "Possible device models")
+- /IotVegaServer/modalDevice/devEui - All messages from a specific device. Where DevEui - DevEui of your device.
 #### Messages  
 Messages are in JSON format.
 JSON message structure:
-- deviceInfo *-> General information about the device*
--- devEui *-> devEui device*
--- appEui *-> appEui device*
--- deviceModel *-> model device (possible values, see "Possible device models")*
-- networkInfo *-> General information about message from device and network status*
--- ts
--- ack
--- dr
--- fcnt
--- freq
--- gatewayId
--- port
--- rssi
--- snr
--- type
-- devicePayload *-> Data that the device has transferred to the server*
--- rowData -> source data transferred to the server
--- The data that was able to parse the application. The set is different for each device model. Подробнее структуру devicePayload смотреть в разделе - "Possible structures devicePayload"
+- deviceInfo *- General information about the device*
+  - devEui *- devEui device*
+  - appEui *- appEui device*
+  - deviceModel *- model device (possible values, see "Possible device models")*
+- networkInfo *- General information about message from device and network status*
+  - ts
+  - ack
+  - dr
+  - fcnt
+  - freq
+  - gatewayId
+  - port
+  - rssi
+  - snr
+  - type
+- devicePayload *- Data that the device has transferred to the server*
+  - rowData *- source data transferred to the server*
+  - *The data that was able to parse the application. The set is different for each device model. More structure devicePayload Look in section - "Possible structures devicePayload"*
 ##### Possible structures devicePayload
 ##### For SI_11 or SI_21
-- packetType ->possible values: regular, alarm, timeCorrection
-- buttary ->charge buttary in %
+- packetType *- possible values: regular, alarm, timeCorrection*
+- buttary *- charge buttary in %*
 - settings
--- activationType ->Possible values: ABP or OTAA
--- confirmedUplinks ->Possible values: confirmed or unconfirmed
--- input1Type ->Passible values: security or pulse
--- input2Type ->Passible values: security or pulse
--- input3Type ->Passible values: security or pulse
--- input4Type ->Passible values: security or pulse
-- time ->Unix timestamp
-- temperature ->Temperature inside the case in degrees Celsius
-- input1 -> Number of pulses
-- input2 -> Number of pulses
-- input3 -> Number of pulses or state
-- input4 -> Number of pulses or state
+  - activationType *- Possible values: ABP or OTAA*
+  - confirmedUplinks *- Possible values: confirmed or unconfirmed*
+  - input1Type *- Passible values: security or pulse*
+  - input2Type *- Passible values: security or pulse*
+  - input3Type *- Passible values: security or pulse*
+  - input4Type *- Passible values: security or pulse*
+- time *- Unix timestamp*
+- temperature *- Temperature inside the case in degrees Celsius*
+- input1 *- Number of pulses*
+- input2 *- Number of pulses*
+- input3 *- Number of pulses or state*
+- input4 *- Number of pulses or state*
 ## Possible device models
 - TL_11
 - SI_12
