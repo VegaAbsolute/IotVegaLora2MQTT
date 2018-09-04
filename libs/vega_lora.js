@@ -311,12 +311,12 @@ function parse(obj)
   }
   finally
   {
+    result.devicePayload = {
+      rawData:obj.data
+    };
     //В случае если получилось распарсить пакет, записываем в результат
     if(parsedDate.valid)
     {
-      result.devicePayload = {
-        rawData:obj.data
-      };
       for(var key in parsedDate)
       {
         if(key!='valid'&&key!='deviceModel') result.devicePayload[key] = parsedDate[key];
