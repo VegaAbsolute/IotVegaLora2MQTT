@@ -47,7 +47,15 @@ class Config
   {
     this._debugMOD.status = val;
   }
+  set other_auto_update(val)
+  {
+    this._system.settings.auto_update = val;
+  }
   //getters-------------------------
+  get auto_update()
+  {
+    return this._system.settings.auto_update;
+  }
   get mqtt()
   {
     return this._mqtt.url;

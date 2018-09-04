@@ -105,6 +105,7 @@ function run(conf)
   {
     if(config.auto_update)
     {
+      if(config.debugMOD) console.log('AutoUpdates are active');
       new CronJob({
         cronTime: '*/1 * * * *',
         onTick: updating,
