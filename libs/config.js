@@ -26,10 +26,6 @@ class Config
   {
     this._mqtt.url = val;
   }
-  // set mqtt_port(val)
-  // {
-  //   this._ws.port = val;
-  // }
 
   set ws_user(val)
   {
