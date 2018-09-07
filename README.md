@@ -46,7 +46,7 @@ JSON message structure:
 ##### Possible structures devicePayload
 ##### For SI_11 or SI_21
 - packetType *- possible values: regular, alarm, timeCorrection*
-- bottary *- charge bottary in %*
+- battery *- charge battery in %*
 - settings
   - activationType *- Possible values: ABP or OTAA*
   - confirmedUplinks *- Possible values: confirmed or unconfirmed*
