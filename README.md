@@ -56,8 +56,8 @@ JSON message structure:
   - input4Type *- Passible values: security or pulse*
 - time *- Unix timestamp*
 - temperature *- Temperature inside the case in degrees Celsius*
-- input1 *- Number of pulses*
-- input2 *- Number of pulses*
+- input1 *- Number of pulses or state*
+- input2 *- Number of pulses or state*
 - input3 *- Number of pulses or state*
 - input4 *- Number of pulses or state*
 ## Possible device models
