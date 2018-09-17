@@ -172,7 +172,8 @@ function parse(obj)
     //Получаем массив байт пакета
     let bytes = converter.stringToBytes(obj.data);
     //Приводим appEui к верхнему регистру
-    let appEui = obj.appEui.toLocaleUpperCase();
+    let appEui = obj.appEui;
+    if(appEui) appEui.toString().toLocaleUpperCase();
     //В зависимости от appEui определяем что за устройство
     switch (appEui)
     {
