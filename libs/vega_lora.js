@@ -173,7 +173,7 @@ function parse(obj)
     let bytes = converter.stringToBytes(obj.data);
     //Приводим appEui к верхнему регистру
     let appEui = obj.appEui;
-    if(appEui) appEui.toString().toLocaleUpperCase();
+    if(appEui) appEui = appEui.toString().toLocaleUpperCase();
     //В зависимости от appEui определяем что за устройство
     switch (appEui)
     {
