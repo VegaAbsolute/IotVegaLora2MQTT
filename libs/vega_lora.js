@@ -155,8 +155,8 @@ function parseSI13(bytes)
       res.packetType = 'interface';
       res.totalDataSize = converter.bytesToInt([bytes[1],bytes[2]]);
       res.dataSize = converter.bytesToInt([bytes[3]]);
-      res.packageNumber = converter.bytesToInt([bytes[4]]);
-      res.packageCount = converter.bytesToInt([bytes[5]]);
+      res.packetNumber = converter.bytesToInt([bytes[4]]);
+      res.packetCount = converter.bytesToInt([bytes[5]]);
       res.data = converter.extractedData(bytes,6);
       break;
     }

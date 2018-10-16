@@ -15,6 +15,7 @@ Applications for receiving data from the IotVega server, parse data and sending 
 ## Supported Devices Lora2MQTT
 - SI-11
 - SI-21
+- SI-13
 ## Message structure Description
 #### Topics
 - /IotVegaServer/# - All messages from the application Iotvega Lora2mqtt
@@ -49,7 +50,7 @@ JSON message structure:
 - battery *- charge battery in %*
 - settings
   - activationType *- Possible values: ABP or OTAA*
-  - confirmedUplinks *- Possible values: confirmed or unconfirmed*
+  - periodConnectInMinutes *- In minutes*
   - input1Type *- Passible values: security or pulse*
   - input2Type *- Passible values: security or pulse*
   - input3Type *- Passible values: security or pulse*
@@ -60,6 +61,35 @@ JSON message structure:
 - input2 *- Number of pulses or state*
 - input3 *- Number of pulses or state*
 - input4 *- Number of pulses or state*
+##### For SI_13
+- packetType *- possible values: regular, alarm, timeCorrection*
+- battery *- charge battery in %*
+- settings
+  - activationType *- Possible values: ABP or OTAA*
+  - confirmedUplinks *- Possible values: confirmed or unconfirmed*
+  - periodConnectInMinutes *- In minutes*
+  - input1Type *- Passible values: security or pulse*
+  - input2Type *- Passible values: security or pulse*
+- time *- Unix timestamp*
+- temperature *- Temperature inside the case in degrees Celsius*
+- input1 *- Number of pulses or state*
+- input2 *- Number of pulses or state*
+- input3 *- Number of pulses or state*
+- input4 *- Number of pulses or state*
+- alarmOnInput *- Entry number*
+- totalDataSize *- Total size obtained through the data interface*
+- dataSize *- The size of the data in this packet*
+- packetNumber *- Packet sequence number*
+- packetCount *- Total count packages*
+- data *- Data*
+- address *- Meter address*
+- pollResult *- Poll result*
+- tariff_1 *- indications on tariff 1*
+- tariff_2 *- indications on tariff 2*
+- tariff_3 *- indications on tariff 3*
+- tariff_4 *- indications on tariff 4*
+- commandCode *- command code*
+- commandResult *- Passible values: success or error*
 ## Possible device models
 - TL_11
 - SI_12
