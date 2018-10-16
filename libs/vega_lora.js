@@ -128,7 +128,69 @@ function parseSI11_SI21(bytes)
 }
 function parseSI13(bytes)
 {
-  let res = {valid:false};
+  let res = {valid:true};
+  res.packetType = parseInt(bytes[0],16);
+  switch (res.packetType)
+  {
+    case 1:
+    {
+      res.packetType = 'regular';
+      res.settings = converter.bytesToSettingsSI(bytes[2],2);
+      res.temperature = converter.bytesToInt([bytes[7]]);
+      res.input1 = converter.bytesToInt([bytes[8],bytes[9],bytes[10],bytes[11]]);
+      res.input2 = converter.bytesToInt([bytes[12],bytes[13],bytes[14],bytes[15]]);
+      break;
+    }
+    case 2:
+    {
+      res.packetType = 'alarm';
+      res.settings = converter.bytesToSettingsSI(bytes[2]);
+      res.alarmOnInput = converter.bytesToInt([bytes[3]]);
+      res.input1 = converter.bytesToInt([bytes[4],bytes[5],bytes[6],bytes[7]]);
+      res.input2 = converter.bytesToInt([bytes[8],bytes[9],bytes[10],bytes[11]]);
+      break;
+    }
+    case 3:
+    {
+      res.packetType = 'rs';
+      res.totalDataSize = converter.bytesToInt([bytes[1],bytes[2]]);
+      res.dataSize = converter.bytesToInt([bytes[3]]);
+      res.numberPackage = converter.bytesToInt([bytes[4]]);
+      res.countPackage = converter.bytesToInt([bytes[5]]);
+      res.data = converter.extractedData(bytes,6);
+      break;
+    }
+    case 4:
+    {
+      res.packetType = 'mercury';
+      res.address = converter.bytesToInt([bytes[1],bytes[2],bytes[3],bytes[4]]);
+      res.pollResult = converter.byteToBoolean(bytes[5]);
+      res.sensor_rate_1 = converter.bytesToFloat([bytes[6],bytes[7],bytes[8],bytes[9]],1000);
+      res.sensor_rate_2 = converter.bytesToFloat([bytes[10],bytes[11],bytes[12],bytes[13]],1000);
+      res.sensor_rate_3 = converter.bytesToFloat([bytes[14],bytes[15],bytes[16],bytes[17]],1000);
+      res.sensor_rate_4 = converter.bytesToFloat([bytes[18],bytes[19],bytes[20],bytes[21]],1000);
+      break;
+    }
+    case 5:
+    {
+      res.packetType = 'confirmationCommandExecute';
+      res.commandCode = converter.bytesToInt([bytes[1]]);
+      res.pollResult = converter.byteToBoolean(bytes[2])?'success':'error';
+      break;
+    }
+    default:
+    {
+      res.valid = false;
+      break;
+    }
+  }
+  for(var key in res)
+  {
+    if(res[key]===null)
+    {
+      res.valid = false;
+    }
+  }
   return res;
 }
 function parseSI11(bytes)
