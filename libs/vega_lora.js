@@ -144,7 +144,7 @@ function parseSI13(bytes)
     case 2:
     {
       res.packetType = 'alarm';
-      res.settings = converter.bytesToSettingsSI(bytes[2]);
+      res.settings = converter.bytesToSettingsSI(bytes[2],2);
       res.alarmOnInput = converter.bytesToInt([bytes[3]]);
       res.input1 = converter.bytesToInt([bytes[4],bytes[5],bytes[6],bytes[7]]);
       res.input2 = converter.bytesToInt([bytes[8],bytes[9],bytes[10],bytes[11]]);

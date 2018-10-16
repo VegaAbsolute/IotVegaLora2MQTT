@@ -92,10 +92,6 @@ function bytesToSettingsSI(byte,version)
         settings.periodConnectInMinutes = null;
       }
     }
-    else
-    {
-      settings.periodConnectInMinutes = null;
-    }
     settings.input1Type = bits[4]?'security':'pulse';
     settings.input2Type = bits[5]?'security':'pulse';
     settings.input3Type = bits[6]?'security':'pulse';
