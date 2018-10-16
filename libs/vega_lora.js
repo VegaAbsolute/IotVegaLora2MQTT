@@ -152,11 +152,11 @@ function parseSI13(bytes)
     }
     case 3:
     {
-      res.packetType = 'rs';
+      res.packetType = 'interface';
       res.totalDataSize = converter.bytesToInt([bytes[1],bytes[2]]);
       res.dataSize = converter.bytesToInt([bytes[3]]);
-      res.numberPackage = converter.bytesToInt([bytes[4]]);
-      res.countPackage = converter.bytesToInt([bytes[5]]);
+      res.packageNumber = converter.bytesToInt([bytes[4]]);
+      res.packageCount = converter.bytesToInt([bytes[5]]);
       res.data = converter.extractedData(bytes,6);
       break;
     }
@@ -165,10 +165,10 @@ function parseSI13(bytes)
       res.packetType = 'mercury';
       res.address = converter.bytesToInt([bytes[1],bytes[2],bytes[3],bytes[4]]);
       res.pollResult = converter.byteToBoolean(bytes[5]);
-      res.sensor_rate_1 = converter.bytesToFloat([bytes[6],bytes[7],bytes[8],bytes[9]],1000);
-      res.sensor_rate_2 = converter.bytesToFloat([bytes[10],bytes[11],bytes[12],bytes[13]],1000);
-      res.sensor_rate_3 = converter.bytesToFloat([bytes[14],bytes[15],bytes[16],bytes[17]],1000);
-      res.sensor_rate_4 = converter.bytesToFloat([bytes[18],bytes[19],bytes[20],bytes[21]],1000);
+      res.tariff_1 = converter.bytesToFloat([bytes[6],bytes[7],bytes[8],bytes[9]],1000);
+      res.tariff_2 = converter.bytesToFloat([bytes[10],bytes[11],bytes[12],bytes[13]],1000);
+      res.tariff_3 = converter.bytesToFloat([bytes[14],bytes[15],bytes[16],bytes[17]],1000);
+      res.tariff_4 = converter.bytesToFloat([bytes[18],bytes[19],bytes[20],bytes[21]],1000);
       break;
     }
     case 5:
