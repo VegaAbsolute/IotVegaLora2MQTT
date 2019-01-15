@@ -254,7 +254,7 @@ function parse( obj )
     freq: obj.freq,
     gatewayId: obj.gatewayId,
     port: obj.port,
-    rssi: obj.ts,
+    rssi: obj.rssi,
     snr: obj.snr,
     type: obj.type,
   };
