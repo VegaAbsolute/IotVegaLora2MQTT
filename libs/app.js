@@ -12,6 +12,23 @@ let waitingReboot = false;
 //------------------------------------------------------------------------------
 //Логика
 //------------------------------------------------------------------------------
+function checkValidRXType(type)
+{
+  try
+  {
+    let validType = typeof type === 'string';
+    let types = type.split('+');
+    if( types.indexOf( 'UNCONF_UP' ) > -1 || types.indexOf( 'CONF_UP' ) > -1 )
+    {
+      return true;
+    }
+    return false;
+  }
+  catch (e)
+  {
+    return false;
+  }
+}
 function send(mess,topic)
 {
   if(!mess)
@@ -49,7 +66,7 @@ function auth_req()
 //------------------------------------------------------------------------------
 function rx(obj)
 {
-  if(!(obj.type&&(obj.type.indexOf('UNCONF_UP')>-1||obj.type.indexOf('CONF_UP')>-1))) return;
+  if(!(obj.type&&checkValidRXType(obj.type))) return;
   try
   {
     let message = VegaLora.parse(obj);

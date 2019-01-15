@@ -1,6 +1,6 @@
 {
   "name": "IotVegaLora2MQTT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Applications for receiving data from the IotVega server, parse data and sending by MQTT.",
   "author": "Vega-Absolute",
   "main": "index.js",

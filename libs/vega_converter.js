@@ -1,45 +1,98 @@
-function stringToBytes(str)
+function stringToBytes( str )
 {
   let bytes=[];
-  for (var i =0;i<str.length-1;i=i+2)
+  for ( var i = 0; i < str.length - 1; i = i + 2 )
   {
-     bytes.push(str.substring(i, i+2));
+     bytes.push( str.substring( i, i + 2 ) );
   }
   return bytes;
 }
-function bytesToSettingsSI(byte,version)
+function bytesToReasonGPNPUMP ( byte )
+{
+  try
+  {
+    if( byte !== undefined)
+    {
+      let reason = parseInt( byte );
+      switch ( reason )
+      {
+        case 1:
+        {
+          return 'by_time';
+          break;
+        }
+        case 2:
+        {
+          return 'vibration_alarm';
+          break;
+        }
+        case 3:
+        {
+          return 'temperature_alarm';
+          break;
+        }
+        case 4:
+        {
+          return 'voltage_status';
+          break;
+        }
+        case 5:
+        {
+          return 'tvoc_alarm';
+          break;
+        }
+        case 6:
+        {
+          return 'leakage_alarm';
+          break;
+        }
+        default:
+        {
+          return null;
+          break;
+        }
+      }
+    }
+    return null;
+  }
+  catch ( e )
+  {
+    return null;
+  }
+}
+function bytesToSettingsSI ( byte, version )
 {
   try
   {
     let settings = {};
-    if(byte===undefined||byte==='ff')
+    if ( byte === undefined || byte === 'ff' )
     {
       return null;
     }
-    let bits = parseInt(byte,16).toString(2).split('').reverse().splice(0,6);
-    settings.activationType = bits[0]?'ABP':'OTAA';
-    if(version==2)
+    let bits = parseInt ( byte, 16 ).toString( 2 ).split('').reverse().splice( 0, 6 );
+    settings.activationType = bits[0] ? 'ABP' : 'OTAA';
+    if ( version == 2 )
     {
       //for si13
-      settings.confirmedUplinks = bits[1]?'confirmed':'unconfirmed';
-      let b2 = bits[2]!==undefined?bits[2].toString():'0';
-      let b3 = bits[3]!==undefined?bits[3].toString():'0';
-      let period_connect = b2+b3;
-      if(period_connect=='00')
+      settings.confirmedUplinks = bits[1] ? 'confirmed' : 'unconfirmed';
+      let b2 = bits[2] !== undefined ? bits[2].toString() : '0';
+      let b3 = bits[3] !== undefined ? bits[3].toString() : '0';
+      let period_connect = b2 + b3;
+      if ( period_connect == '00' )
       {
         settings.periodConnectInMinutes = 60;
       }
-      else if(period_connect=='01')
+      else if ( period_connect == '01' )
       {
         //6 H
         settings.periodConnectInMinutes = 360;
       }
-      else if(period_connect=='10')
+      else if ( period_connect == '10' )
       {
         //12 H
         settings.periodConnectInMinutes = 720;
       }
-      else if(period_connect=='11')
+      else if ( period_connect == '11' )
       {
         //24 H
         settings.periodConnectInMinutes = 1440;
@@ -52,37 +105,37 @@ function bytesToSettingsSI(byte,version)
     else
     {
       //for si11
-      let b1 = bits[1]!==undefined?bits[1].toString():'0';
-      let b2 = bits[2]!==undefined?bits[2].toString():'0';
-      let b3 = bits[3]!==undefined?bits[3].toString():'0';
-      let period_connect = b1+b2+b3;
-      if(period_connect=='000')
+      let b1 = bits[1] !== undefined ? bits[1].toString() : '0';
+      let b2 = bits[2] !== undefined ? bits[2].toString() : '0';
+      let b3 = bits[3] !== undefined ? bits[3].toString() : '0';
+      let period_connect = b1 + b2 + b3;
+      if ( period_connect == '000' )
       {
         settings.periodConnectInMinutes = 5;
       }
-      else if(period_connect=='100')
+      else if ( period_connect == '100' )
       {
         settings.periodConnectInMinutes = 15;
       }
-      else if(period_connect=='010')
+      else if ( period_connect == '010' )
       {
         settings.periodConnectInMinutes = 30;
       }
-      else if(period_connect=='110')
+      else if ( period_connect == '110' )
       {
         settings.periodConnectInMinutes = 60;
       }
-      else if(period_connect=='001')
+      else if ( period_connect == '001' )
       {
         //6 H
         settings.periodConnectInMinutes = 360;
       }
-      else if(period_connect=='101')
+      else if ( period_connect == '101' )
       {
         //12 H
         settings.periodConnectInMinutes = 720;
       }
-      else if(period_connect=='011')
+      else if ( period_connect == '011' )
       {
         //24 H
         settings.periodConnectInMinutes = 1440;
@@ -92,133 +145,150 @@ function bytesToSettingsSI(byte,version)
         settings.periodConnectInMinutes = null;
       }
     }
-    settings.input1Type = bits[4]?'security':'pulse';
-    settings.input2Type = bits[5]?'security':'pulse';
-    settings.input3Type = bits[6]?'security':'pulse';
-    settings.input4Type = bits[7]?'security':'pulse';
+    settings.input1Type = bits[4] ? 'security' : 'pulse';
+    settings.input2Type = bits[5] ? 'security' : 'pulse';
+    settings.input3Type = bits[6] ? 'security' : 'pulse';
+    settings.input4Type = bits[7] ? 'security' : 'pulse';
     return settings;
   }
-  catch(err)
+  catch ( err )
   {
     return null;
   }
 }
-function bytesToInt(bytes)
+function bytesToInt ( bytes )
 {
     try
     {
-        let valid_arr = typeof bytes === 'object'&&bytes.length;
-        if(!valid_arr) return null;
+        let valid_arr = typeof bytes === 'object' && bytes.length;
+        if ( !valid_arr ) return null;
         let countMAX = 0;
         bytes.reverse();
         let result='';
-        for(var i = 0; i<bytes.length;i++)
+        for (var i = 0; i < bytes.length; i++)
         {
-            if(bytes[i]=='ff') countMAX++;
-            result+=bytes[i]===undefined?'00':bytes[i].toString();
+            if ( bytes[i] == 'ff' ) countMAX++;
+            result += bytes[i] === undefined ? '00' : bytes[i].toString();
         }
-        var result_int = parseInt(result,16);
-        if(!isNaN(result_int))
+        var result_int = parseInt( result, 16 );
+        if ( !isNaN( result_int ) )
         {
-            if(countMAX!==bytes.length)
+            if (countMAX !== bytes.length)
             {
                 return result_int;
             }
         }
         return null;
     }
-    catch(e)
+    catch ( e )
     {
         return null;
     }
 }
-function bytesToFloat(bytes,divider)
+function bytesToFloat( bytes, divider )
 {
     try
     {
-        let valid_arr = typeof bytes === 'object'&&bytes.length;
-        if(!valid_arr) return null;
+        let valid_arr = typeof bytes === 'object' && bytes.length;
+        if ( !valid_arr ) return null;
         let countMAX = 0;
         bytes.reverse();
         let result='';
-        for(var i = 0; i<bytes.length;i++)
+        for ( var i = 0; i < bytes.length; i++ )
         {
-            if(bytes[i]=='ff') countMAX++;
-            result+=bytes[i]===undefined?'00':bytes[i].toString();
+            if ( bytes[i] == 'ff' ) countMAX++;
+            result += bytes[i] === undefined ? '00' : bytes[i].toString();
         }
-        var result_int = parseInt(result,16);
-        if(!isNaN(result_int))
+        var result_int = parseInt( result, 16 );
+        if ( !isNaN( result_int ) )
         {
-            if(countMAX!==bytes.length)
+            if ( countMAX !== bytes.length )
             {
-                return result_int/divider;
+                return result_int / divider;
             }
         }
         return null;
     }
-    catch(e)
+    catch ( e )
     {
         return null;
     }
 }
-function byteToBoolean(byte)
+function byteToBoolean ( byte )
 {
   try
   {
-    let result = parseInt(byte,16)
-    if(result===1) return true;
+    let result = parseInt ( byte, 16 )
+    if ( result === 1) return true;
     return false;
   }
-  catch (e)
+  catch ( e )
   {
     return false;
   }
 }
-function bytesToIntNegative(bytes)
+function bytesToFloatNegative( bytes,  divider )
+{
+  try
+  {
+    if( divider === undefined ) divider = 1;
+    let result = bytesToIntNegative(bytes);
+    if ( result !== null )
+    {
+      return result / divider;
+    }
+    return null;
+  }
+  catch ( e )
+  {
+    return null;
+  }
+}
+function bytesToIntNegative( bytes )
 {
     try
     {
-        let valid_arr = typeof bytes === 'object'&&bytes.length;
-        if(!valid_arr) return null;
+        let valid_arr = typeof bytes === 'object' && bytes.length;
+        if ( !valid_arr ) return null;
         let countMAX = 0;
         bytes.reverse();
         let result='';
-        for(var i = 0; i<bytes.length;i++)
+        for ( var i = 0; i < bytes.length; i++ )
         {
-            if(bytes[i]=='ff') countMAX++;
-            result+=bytes[i]===undefined?'00':bytes[i].toString();
+            if ( bytes[i] == 'ff' ) countMAX++;
+            result += bytes[i] === undefined ? '00' : bytes[i].toString();
         }
-        var result_int = parseInt(result,16);
-        if(!isNaN(result_int))
+        var result_int = parseInt( result, 16 );
+        if ( !isNaN( result_int ) )
         {
-            let maxVal = Math.pow(2, result.length / 2 * 8);
+            let maxVal = Math.pow( 2, result.length / 2 * 8 );
             if (result_int > maxVal / 2 - 1)
             {
                 result_int = result_int - maxVal;
             }
-            if(countMAX!==bytes.length)
+            if ( countMAX !== bytes.length )
             {
                 return result_int;
             }
         }
-
+        return null;
     }
-    catch(e)
+    catch ( e )
     {
         return null;
     }
 }
-function extractedData(data,before)
+function extractedData ( data, before )
 {
   let result = '';
   try
   {
-      for(var i = before; i<data.length;i++)
+      for (var i = before; i < data.length; i++ )
       {
-          result+=data[i];
+          result += data[i];
       }
   }
-  catch(e)
+  catch ( e )
   {
 
   }
@@ -229,6 +299,7 @@ function extractedData(data,before)
 }
 module.exports.bytesToSettingsSI = bytesToSettingsSI;
 module.exports.bytesToIntNegative = bytesToIntNegative;
+module.exports.bytesToFloatNegative = bytesToFloatNegative;
 module.exports.bytesToInt = bytesToInt;
 module.exports.stringToBytes = stringToBytes;
 module.exports.extractedData = extractedData;
