@@ -142,7 +142,7 @@ function parseGPNPUMP( bytes, port )
       res.temperature = converter.bytesToFloatNegative( [bytes[9],bytes[10]], 10 );
       res.tvoc = converter.byteToBoolean( bytes[11] );
       res.leakage = converter.byteToBoolean( bytes[12] );
-      res.temperature_maximum = converter.bytesToIntNegative( [bytes[13] );
+      res.temperature_maximum = converter.bytesToIntNegative( [bytes[13]] );
       res.vibration_maximum = converter.bytesToFloat( [bytes[14], bytes[15]], 10 );
       break;
     }
