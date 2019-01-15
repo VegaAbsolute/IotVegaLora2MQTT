@@ -261,8 +261,8 @@ function bytesToIntNegative( bytes )
         var result_int = parseInt( result, 16 );
         if ( !isNaN( result_int ) )
         {
-            let maxVal = Math.pow( 2, result.length / 2 * 8 );
-            if (result_int > maxVal / 2 - 1)
+            let maxVal = Math.pow( 2, ( result.length / 2 * 8 ) );
+            if (result_int > ( ( maxVal / 2 ) - 1) )
             {
                 result_int = result_int - maxVal;
             }
