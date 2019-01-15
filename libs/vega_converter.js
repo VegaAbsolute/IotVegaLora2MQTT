@@ -301,6 +301,7 @@ module.exports.bytesToSettingsSI = bytesToSettingsSI;
 module.exports.bytesToIntNegative = bytesToIntNegative;
 module.exports.bytesToFloatNegative = bytesToFloatNegative;
 module.exports.bytesToInt = bytesToInt;
+module.exports.bytesToReasonGPNPUMP = bytesToReasonGPNPUMP;
 module.exports.stringToBytes = stringToBytes;
 module.exports.extractedData = extractedData;
 module.exports.byteToBoolean = byteToBoolean;
