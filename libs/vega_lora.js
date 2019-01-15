@@ -126,14 +126,14 @@ function parseSI11_SI21 ( bytes )
   }
   return res;
 }
-function parseGPNPUMP( bytes )
+function parseGPNPUMP( bytes, port )
 {
   let res = { valid: true };
-  switch ( res.port )
+  switch ( port )
   {
     case 2:
     {
-      res.packetType = 'regular';
+      // res.packetType = 'regular';
       res.reason = converter.bytesToReasonGPNPUMP( bytes[0] );
       res.battery = converter.bytesToInt( [bytes[1]] );
       res.time = converter.bytesToInt( [bytes[2], bytes[3], bytes[4], bytes[5]] );
