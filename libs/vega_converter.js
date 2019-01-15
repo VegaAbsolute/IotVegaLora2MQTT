@@ -300,6 +300,7 @@ function extractedData ( data, before )
 module.exports.bytesToSettingsSI = bytesToSettingsSI;
 module.exports.bytesToIntNegative = bytesToIntNegative;
 module.exports.bytesToFloatNegative = bytesToFloatNegative;
+module.exports.bytesToFloat = bytesToFloat;
 module.exports.bytesToInt = bytesToInt;
 module.exports.bytesToReasonGPNPUMP = bytesToReasonGPNPUMP;
 module.exports.stringToBytes = stringToBytes;
