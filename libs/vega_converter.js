@@ -60,6 +60,60 @@ function bytesToReasonGPNPUMP ( byte )
     return null;
   }
 }
+function bytesToReasonHS0101 ( byte )
+{
+  try
+  {
+    if( byte !== undefined)
+    {
+      let reason = parseInt( byte );
+      switch ( reason )
+      {
+        case 1:
+        {
+          return 'by_time';
+          break;
+        }
+        case 2:
+        {
+          return 'alarm_sensor_1';
+          break;
+        }
+        case 3:
+        {
+          return 'alarm_sensor_2';
+          break;
+        }
+        case 4:
+        {
+          return 'vibration_alarm';
+          break;
+        }
+        case 5:
+        {
+          return 'damp_alarm';
+          break;
+        }
+        case 6:
+        {
+          return 'temperature_alarm';
+          break;
+        }
+        default:
+        {
+          return null;
+          break;
+        }
+      }
+    }
+    return null;
+  }
+  catch ( e )
+  {
+    return null;
+  }
+}
+
 function bytesToSettingsSI ( byte, version )
 {
   try
@@ -302,6 +356,7 @@ module.exports.bytesToIntNegative = bytesToIntNegative;
 module.exports.bytesToFloatNegative = bytesToFloatNegative;
 module.exports.bytesToFloat = bytesToFloat;
 module.exports.bytesToInt = bytesToInt;
+module.exports.bytesToReasonHS0101 = bytesToReasonHS0101;
 module.exports.bytesToReasonGPNPUMP = bytesToReasonGPNPUMP;
 module.exports.stringToBytes = stringToBytes;
 module.exports.extractedData = extractedData;

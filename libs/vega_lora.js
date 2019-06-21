@@ -126,6 +126,43 @@ function parseSI11_SI21 ( bytes )
   }
   return res;
 }
+function parseHS0101( bytes, port )
+{
+  let res = { valid: true };
+  switch ( port )
+  {
+    case 2:
+    {
+      // res.packetType = 'regular'; 
+      res.reason = converter.bytesToReasonHS0101( bytes[0] );
+      res.battery = converter.bytesToInt( [bytes[1]] );
+      res.time = converter.bytesToInt( [bytes[2], bytes[3], bytes[4], bytes[5]] );
+      res.temperature = converter.bytesToFloatNegative( [bytes[6],bytes[7]], 10 );
+      res.damp = converter.bytesToInt( [bytes[8]] );
+      res.sensor_1 = converter.byteToBoolean( bytes[9] );
+      res.sensor_2 = converter.byteToBoolean( bytes[10] );
+      res.angle = converter.bytesToInt( [bytes[11]] );
+      res.damp_minimum = converter.bytesToInt( [bytes[12]] );
+      res.damp_maximum = converter.bytesToInt( [bytes[13]] );
+      res.temperature_minimum = converter.bytesToIntNegative( [bytes[14]] );
+      res.temperature_maximum = converter.bytesToIntNegative( [bytes[15]] );
+      break;
+    }
+    default:
+    {
+      res.valid = false;
+      break;
+    }
+  }
+  for(var key in res)
+  {
+    if( res[key] === null )
+    {
+      res.valid = false;
+    }
+  }
+  return res;
+}
 function parseGPNPUMP( bytes, port )
 {
   let res = { valid: true };
@@ -393,6 +430,13 @@ function parse( obj )
       {
         result.deviceInfo.deviceModel = 'GPNPUMP';
         parsedDate = parseGPNPUMP( bytes, obj.port );
+        break;
+      }
+      case '736D687330313031':
+      {
+        result.deviceInfo.deviceModel = 'SMART_HS_0101';
+        parsedDate = parseHS0101( bytes, obj.port );
+        break;
         break;
       }
       default:
