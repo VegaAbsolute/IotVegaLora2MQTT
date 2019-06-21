@@ -133,7 +133,6 @@ function parseHS0101( bytes, port )
   {
     case 2:
     {
-      // res.packetType = 'regular'; 
       res.reason = converter.bytesToReasonHS0101( bytes[0] );
       res.battery = converter.bytesToInt( [bytes[1]] );
       res.time = converter.bytesToInt( [bytes[2], bytes[3], bytes[4], bytes[5]] );
