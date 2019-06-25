@@ -84,12 +84,17 @@ function parseMBUS1rev2 ( bytes )
   let res = { valid: false };
   return res;
 }
-function parseSI11_SI21 ( bytes )
+function parseSI11_SI21 ( bytes, port )
 {
   let res = { valid:true };
   res.packetType = parseInt( bytes[0], 16 );
   switch ( res.packetType )
   {
+    case 0:
+    {
+      if( port == 3 ) res.packetType = 'settings';
+      break;
+    }
     case 1:
     {
       res.packetType = 'regular';
@@ -117,7 +122,7 @@ function parseSI11_SI21 ( bytes )
     }
     case 255:
     {
-      res.packetType = 'timeCorrectionReq';
+      res.packetType = 'timeCorrection';
       res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
       break;
     }
@@ -143,6 +148,7 @@ function parseHS0101( bytes, port )
   {
     case 2:
     {
+      res.packetType = 'regular';
       res.reason = converter.bytesToReasonHS0101( bytes[0] );
       res.battery = converter.bytesToInt( [bytes[1]] );
       res.time = converter.bytesToInt( [bytes[2], bytes[3], bytes[4], bytes[5]] );
@@ -156,6 +162,15 @@ function parseHS0101( bytes, port )
       res.temperature_minimum = converter.bytesToIntNegative( [bytes[14]] );
       res.temperature_maximum = converter.bytesToIntNegative( [bytes[15]] );
       break;
+    }
+    case 4:
+    {
+      res.packetType = 'timeCorrection';
+      res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+    }
+    case 3:
+    {
+      res.packetType = 'settings';
     }
     default:
     {
@@ -207,12 +222,17 @@ function parseGPNPUMP( bytes, port )
   }
   return res;
 }
-function parseSI13 ( bytes )
+function parseSI13 ( bytes, port )
 {
   let res = { valid:true };
   res.packetType = parseInt( bytes[0], 16 );
   switch ( res.packetType )
   {
+    case 0:
+    {
+      if( port == 3 ) res.packetType = 'settings';
+      break;
+    }
     case 1:
     {
       res.packetType = 'regular';
@@ -259,6 +279,12 @@ function parseSI13 ( bytes )
       res.pollResult = converter.byteToBoolean( bytes[2]) ? 'success' : 'error';
       break;
     }
+    case 255:
+    {
+      res.packetType = 'timeCorrection';
+      res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      break;
+    }
     default:
     {
       res.valid = false;
@@ -274,12 +300,17 @@ function parseSI13 ( bytes )
   }
   return res;
 }
-function parseSI13rev2 ( bytes )
+function parseSI13rev2 ( bytes, port )
 {
   let res = { valid:true };
   res.packetType = parseInt( bytes[0], 16 );
   switch ( res.packetType )
   {
+    case 0:
+    {
+      if( port == 3 ) res.packetType = 'settings';
+      break;
+    }
     case 1:
     {
       res.packetType = 'regular';
@@ -337,6 +368,12 @@ function parseSI13rev2 ( bytes )
       // res.pollResult = converter.byteToBoolean( bytes[2]) ? 'success' : 'error';
       break;
     }
+    case 255:
+    {
+      res.packetType = 'timeCorrection';
+      res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      break;
+    }
     default:
     {
       res.valid = false;
@@ -352,22 +389,22 @@ function parseSI13rev2 ( bytes )
   }
   return res;
 }
-function parseSI12 ( bytes )
+function parseSI12 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseTL11 ( bytes )
+function parseTL11 ( bytes, port )
+{
+  let res = { valid: false, port };
+  return res;
+}
+function parseSI22 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseSI22 ( bytes )
-{
-  let res = { valid: false };
-  return res;
-}
-function parseGM1 ( bytes )
+function parseGM1 ( bytes, port )
 {
   let res = { valid: false };
   return res;
@@ -406,163 +443,163 @@ function parse( obj )
       case '7665676173693232':
       {
         result.deviceInfo.deviceModel = 'SI_22';
-        parsedDate = parseSI22( bytes );
+        parsedDate = parseSI22( bytes, obj.port );
         break;
       }
       case '76656761474D2D31':
       {
         result.deviceInfo.deviceModel = 'GM_1';
-        parsedDate = parseGM1( bytes );
+        parsedDate = parseGM1( bytes, obj.port );
         break;
       }
       case '76656761544C3131':
       {
         result.deviceInfo.deviceModel = 'TL_11';
-        parsedDate = parseTL11( bytes );
+        parsedDate = parseTL11( bytes, obj.port );
         break;
       }
       case '7665676173693132':
       {
         result.deviceInfo.deviceModel = 'SI_12';
-        parsedDate = parseSI12( bytes );
+        parsedDate = parseSI12( bytes, obj.port );
         break;
       }
       case '7665676173693131':
       {
         result.deviceInfo.deviceModel = 'SI_11';
-        parsedDate = parseSI11_SI21( bytes );
+        parsedDate = parseSI11_SI21( bytes, obj.port );
         break;
       }
       case '7665676173693133':
       {
         result.deviceInfo.deviceModel = 'SI_13';
-        parsedDate = parseSI13( bytes );
+        parsedDate = parseSI13( bytes, obj.port );
         break;
       }
       case '3032676173693133':
       {
         result.deviceInfo.deviceModel = 'SI_13';
-        parsedDate = parseSI13rev2( bytes );
+        parsedDate = parseSI13rev2( bytes, obj.port );
         break;
       }
       case '7665676173693231':
       {
         result.deviceInfo.deviceModel = 'SI_21';
-        parsedDate = parseSI11_SI21( bytes );
+        parsedDate = parseSI11_SI21( bytes, obj.port );
         break;
       }
       case '4D2D425553203120':
       {
         result.deviceInfo.deviceModel = 'M_BUS_1';
-        parsedDate = parseMBUS1( bytes );
+        parsedDate = parseMBUS1( bytes, obj.port );
         break;
       }
       case '3032425553203120':
       {
         result.deviceInfo.deviceModel = 'M_BUS_1';
-        parsedDate = parseMBUS1rev2( bytes );
+        parsedDate = parseMBUS1rev2( bytes, obj.port );
         break;
       }
       case '4D2D425553203220':
       {
         result.deviceInfo.deviceModel = 'M_BUS_2';
-        parsedDate = parseMBUS2( bytes );
+        parsedDate = parseMBUS2( bytes, obj.port );
         break;
       }
       case '3032425553203220':
       {
         result.deviceInfo.deviceModel = 'M_BUS_2';
-        parsedDate = parseMBUS2rev2( bytes );
+        parsedDate = parseMBUS2rev2( bytes, obj.port );
         break;
       }
       case '7665676174703131':
       {
         result.deviceInfo.deviceModel = 'TP_11';
-        parsedDate = parseTP11( bytes );
+        parsedDate = parseTP11( bytes, obj.port );
         break;
       }
       case '3032676174703131':
       {
         result.deviceInfo.deviceModel = 'TP_11';
-        parsedDate = parseTP11rev2( bytes );
+        parsedDate = parseTP11rev2( bytes, obj.port );
         break;
       }
       case '7665676174643131':
       {
         result.deviceInfo.deviceModel = 'TD_11';
-        parsedDate = parseTD11( bytes );
+        parsedDate = parseTD11( bytes, obj.port );
         break;
       }
       case '76656761474D2D32':
       {
         result.deviceInfo.deviceModel = 'GM_2';
-        parsedDate = parseGM2( bytes );
+        parsedDate = parseGM2( bytes, obj.port );
         break;
       }
       case '7665676173483031':
       {
         result.deviceInfo.deviceModel = 'SH_1';
-        parsedDate = parseSH1( bytes );
+        parsedDate = parseSH1( bytes, obj.port );
         break;
       }
       case '7665676153564531':
       {
         result.deviceInfo.deviceModel = 'SVE_1';
-        parsedDate = parseSVE1( bytes );
+        parsedDate = parseSVE1( bytes, obj.port );
         break;
       }
       case '7665676153454231':
       {
         result.deviceInfo.deviceModel = 'SEEB_1_VEGA';
-        parsedDate = parseSEEB( bytes );
+        parsedDate = parseSEEB( bytes, obj.port );
         break;
       }
       case '5345454220312020':
       {
         result.deviceInfo.deviceModel = 'SEEB_1_SPBZIP';
-        parsedDate = parseSEEB( bytes );
+        parsedDate = parseSEEB( bytes, obj.port );
         break;
       }
       case '5345454220322020':
       {
         result.deviceInfo.deviceModel = 'SEEB_2_MERCURY';
-        parsedDate = parseSEEB( bytes );
+        parsedDate = parseSEEB( bytes, obj.port );
         break;
       }
       case '7665676173693131':
       {
         result.deviceInfo.deviceModel = 'TC_11';
-        parsedDate = parseTC11( bytes );
+        parsedDate = parseTC11( bytes, obj.port );
         break;
       }
       case '76616D6330313031':
       {
         result.deviceInfo.deviceModel = 'SMART_MC_0101';
-        parsedDate = parseMC0101( bytes );
+        parsedDate = parseMC0101( bytes, obj.port );
         break;
       }
       case '7661616330313031':
       {
         result.deviceInfo.deviceModel = 'SMART_AS_0101';
-        parsedDate = parseAS0101( bytes );
+        parsedDate = parseAS0101( bytes, obj.port );
         break;
       }
       case '766567614D533031':
       {
         result.deviceInfo.deviceModel = 'SMART_MS_0101';
-        parsedDate = parseMS0101( bytes );
+        parsedDate = parseMS0101( bytes, obj.port );
         break;
       }
       case '7665676153533031':
       {
         result.deviceInfo.deviceModel = 'SMART_SS_0101';
-        parsedDate = parseSS0101( bytes );
+        parsedDate = parseSS0101( bytes, obj.port );
         break;
       }
       case '76656761204C4D31':
       {
         result.deviceInfo.deviceModel = 'LM_1';
-        parsedDate = parseLM1( bytes );
+        parsedDate = parseLM1( bytes, obj.port );
         break;
       }
       case '7665676120373737':

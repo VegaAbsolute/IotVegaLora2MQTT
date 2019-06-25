@@ -76,12 +76,12 @@ function bytesToReasonHS0101 ( byte )
         }
         case 2:
         {
-          return 'alarm_sensor_1';
+          return 'alarm_open_sensor_1';
           break;
         }
         case 3:
         {
-          return 'alarm_sensor_2';
+          return 'alarm_open_sensor_2';
           break;
         }
         case 4:
@@ -91,7 +91,7 @@ function bytesToReasonHS0101 ( byte )
         }
         case 5:
         {
-          return 'damp_alarm';
+          return 'humidity_alarm';
           break;
         }
         case 6:

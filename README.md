@@ -16,6 +16,7 @@ Applications for receiving data from the IotVega server, parse data and sending 
 - SI-11
 - SI-21
 - SI-13
+- SMART HS-0101
 ## Message structure Description
 #### Topics
 - /IotVegaServer/# - All messages from the application Iotvega Lora2mqtt
@@ -46,7 +47,7 @@ JSON message structure:
   - *The data that was able to parse the application. The set is different for each device model. More structure devicePayload Look in section - "Possible structures devicePayload"*
 ##### Possible structures devicePayload
 ##### For SI_11 or SI_21
-- packetType *- possible values: regular, alarm, timeCorrection*
+- packetType *- possible values: regular, alarm, timeCorrection, settings*
 - battery *- charge battery in %*
 - settings
   - activationType *- Possible values: ABP or OTAA*
@@ -62,7 +63,7 @@ JSON message structure:
 - input3 *- Number of pulses or state*
 - input4 *- Number of pulses or state*
 ##### For SI_13
-- packetType *- possible values: regular, alarm, timeCorrection*
+- packetType *- possible values: regular, alarm, timeCorrection, settings*
 - battery *- charge battery in %*
 - settings
   - activationType *- Possible values: ABP or OTAA*
@@ -90,6 +91,20 @@ JSON message structure:
 - tariff_4 *- indications on tariff 4*
 - commandCode *- command code*
 - commandResult *- Passible values: success or error*
+##### SMART_HS_0101
+- reason *- possible values: by_time, vibration_alarm, alarm_open_sensor_1, alarm_open_sensor_2, humidity_alarm, temperature_alarm*
+- packetType *- possible values: regular, timeCorrection, settings*
+- battery *- charge battery in %*
+- time *- Unix timestamp*
+- temperature *- Temperature inside the case in degrees Celsius*
+- humidity *- Humidity in %*
+- state_open_sensor_1 *- state*
+- state_open_sensor_2 *- state*
+- angle *- Angle of vertical deviation in %*
+- humidity_minimum *- Min humidity threshold in %*
+- humidity_maximum *- Max humidity threshold in %*
+- temperature_minimum *- Min temperature threshold*
+- temperature_maximum *- Max temperature threshold*
 ## Possible device models
 - TL_11
 - SI_12
@@ -111,4 +126,7 @@ JSON message structure:
 - SMART_MS_0101
 - SMART_SS_0101
 - LM_1
+- SI_22
+- GM_1
+- SMART_HS_0101
 > unknown - If the device model could not be determined
