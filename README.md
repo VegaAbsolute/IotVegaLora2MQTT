@@ -17,6 +17,7 @@ Applications for receiving data from the IotVega server, parse data and sending 
 - SI-21
 - SI-13
 - SMART HS-0101
+- GM-2
 ## Message structure Description
 #### Topics
 - /IotVegaServer/# - All messages from the application Iotvega Lora2mqtt
@@ -105,6 +106,19 @@ JSON message structure:
 - humidity_maximum *- Max humidity threshold in %*
 - temperature_minimum *- Min temperature threshold*
 - temperature_maximum *- Max temperature threshold*
+##### For GM_2
+- packetType *- possible values: regular, timeCorrection, settings*
+- reason *- possible values: by_time, alarm_input_1, alarm_input_2, update_state_output_1, update_state_output_2, alarm_hall, alarm_tamper*
+- battery *- charge battery in %*
+- temperature *- Temperature inside the case in degrees Celsius*
+- input1 *- state input 1*
+- input2 *- state input 2*
+- output1 *- state output 1*
+- output2 *- state output 2*
+- state_hall *- state hall*
+- state_tamper *- state tamper*
+- readings_meter *- readings meter*
+- initial_readings_meter *- initial readings meter*
 ## Possible device models
 - TL_11
 - SI_12

@@ -60,6 +60,64 @@ function bytesToReasonGPNPUMP ( byte )
     return null;
   }
 }
+function bytesToReasonGM2 ( byte )
+{
+  try
+  {
+    if( byte !== undefined)
+    {
+      let reason = parseInt( byte );
+      switch ( reason )
+      {
+        case 0:
+        {
+          return 'by_time';
+          break;
+        }
+        case 1:
+        {
+          return 'alarm_input_1';
+          break;
+        }
+        case 2:
+        {
+          return 'alarm_input_2';
+          break;
+        }
+        case 3:
+        {
+          return 'update_state_output_1';
+          break;
+        }
+        case 4:
+        {
+          return 'update_state_output_2';
+          break;
+        }
+        case 5:
+        {
+          return 'alarm_hall';
+          break;
+        }
+        case 6:
+        {
+          return 'alarm_tamper';
+          break;
+        }
+        default:
+        {
+          return null;
+          break;
+        }
+      }
+    }
+    return null;
+  }
+  catch ( e )
+  {
+    return null;
+  }
+}
 function bytesToReasonHS0101 ( byte )
 {
   try
