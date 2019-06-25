@@ -34,11 +34,6 @@ function parseSEEB ( bytes )
   let res = { valid: false };
   return res;
 }
-function parseSEEB ( bytes )
-{
-  let res = { valid: false };
-  return res;
-}
 function parseSVE1 ( bytes )
 {
   let res = { valid: false };
@@ -64,12 +59,27 @@ function parseTP11 ( bytes )
   let res = { valid: false };
   return res;
 }
+function parseTP11rev2 ( bytes )
+{
+  let res = { valid: false };
+  return res;
+}
 function parseMBUS2 ( bytes )
 {
   let res = { valid: false };
   return res;
 }
+function parseMBUS2rev2 ( bytes )
+{
+  let res = { valid: false };
+  return res;
+}
 function parseMBUS1 ( bytes )
+{
+  let res = { valid: false };
+  return res;
+}
+function parseMBUS1rev2 ( bytes )
 {
   let res = { valid: false };
   return res;
@@ -137,12 +147,12 @@ function parseHS0101( bytes, port )
       res.battery = converter.bytesToInt( [bytes[1]] );
       res.time = converter.bytesToInt( [bytes[2], bytes[3], bytes[4], bytes[5]] );
       res.temperature = converter.bytesToFloatNegative( [bytes[6],bytes[7]], 10 );
-      res.damp = converter.bytesToInt( [bytes[8]] );
-      res.sensor_1 = converter.byteToBoolean( bytes[9] );
-      res.sensor_2 = converter.byteToBoolean( bytes[10] );
+      res.humidity = converter.bytesToInt( [bytes[8]] );
+      res.state_open_sensor_1 = converter.byteToBoolean( bytes[9] );
+      res.state_open_sensor_2 = converter.byteToBoolean( bytes[10] );
       res.angle = converter.bytesToInt( [bytes[11]] );
-      res.damp_minimum = converter.bytesToInt( [bytes[12]] );
-      res.damp_maximum = converter.bytesToInt( [bytes[13]] );
+      res.humidity_minimum = converter.bytesToInt( [bytes[12]] );
+      res.humidity_maximum = converter.bytesToInt( [bytes[13]] );
       res.temperature_minimum = converter.bytesToIntNegative( [bytes[14]] );
       res.temperature_maximum = converter.bytesToIntNegative( [bytes[15]] );
       break;
@@ -264,12 +274,100 @@ function parseSI13 ( bytes )
   }
   return res;
 }
+function parseSI13rev2 ( bytes )
+{
+  let res = { valid:true };
+  res.packetType = parseInt( bytes[0], 16 );
+  switch ( res.packetType )
+  {
+    case 1:
+    {
+      res.packetType = 'regular';
+      res.settings = converter.bytesToSettingsSI( bytes[2], 2 );
+      res.time = converter.bytesToInt( [bytes[3], bytes[4], bytes[5], bytes[6]] );
+      res.temperature = converter.bytesToInt( [bytes[7]] );
+      res.input1 = converter.bytesToInt( [bytes[8], bytes[9], bytes[10], bytes[11]] );
+      res.input2 = converter.bytesToInt( [bytes[12], bytes[13], bytes[14], bytes[15]] );
+      break;
+    }
+    case 2:
+    {
+      res.packetType = 'alarm';
+      res.settings = converter.bytesToSettingsSI( bytes[2], 2 );
+      res.alarmOnInput = converter.bytesToInt( [bytes[3]] );
+      res.input1 = converter.bytesToInt( [bytes[4], bytes[5], bytes[6], bytes[7]] );
+      res.input2 = converter.bytesToInt( [bytes[8], bytes[9], bytes[10], bytes[11]] );
+      res.time = converter.bytesToInt( [bytes[12], bytes[13], bytes[14], bytes[15]] );
+      break;
+    }
+    case 3:
+    {
+      res.packetType = 'interface';
+      res.totalDataSize = converter.bytesToInt( [bytes[1], bytes[2]] );
+      res.dataSize = converter.bytesToInt( [bytes[3]] );
+      res.packetNumber = converter.bytesToInt( [bytes[4]] );
+      res.packetCount = converter.bytesToInt( [bytes[5]] );
+      res.data = converter.extractedData( bytes,6 );
+      break;
+    }
+    case 4:
+    {
+      res.packetType = 'mercury';
+      res.address = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      res.pollResult = converter.byteToBoolean( bytes[5] );
+      res.tariff_1 = converter.bytesToFloat([bytes[6], bytes[7], bytes[8], bytes[9]], 1000);
+      res.tariff_2 = converter.bytesToFloat([bytes[10], bytes[11], bytes[12], bytes[13]], 1000);
+      res.tariff_3 = converter.bytesToFloat([bytes[14], bytes[15], bytes[16], bytes[17]], 1000);
+      res.tariff_4 = converter.bytesToFloat([bytes[18], bytes[19], bytes[20], bytes[21]], 1000);
+      res.time = converter.bytesToInt( [bytes[22], bytes[23], bytes[24], bytes[25]] );
+      break;
+    }
+    case 5:
+    {
+      res.packetType = 'confirmationCommandExecute';
+      res.commandCode = converter.bytesToInt( [bytes[1]] );
+      res.pollResult = converter.byteToBoolean( bytes[2]) ? 'success' : 'error';
+      break;
+    }
+    case 6:
+    {
+      //НАДО ДЕЛАТЬ
+      // res.packetType = 'confirmationCommandExecute';
+      // res.commandCode = converter.bytesToInt( [bytes[1]] );
+      // res.pollResult = converter.byteToBoolean( bytes[2]) ? 'success' : 'error';
+      break;
+    }
+    default:
+    {
+      res.valid = false;
+      break;
+    }
+  }
+  for(var key in res)
+  {
+    if( res[key] === null )
+    {
+      res.valid = false;
+    }
+  }
+  return res;
+}
 function parseSI12 ( bytes )
 {
   let res = { valid: false };
   return res;
 }
 function parseTL11 ( bytes )
+{
+  let res = { valid: false };
+  return res;
+}
+function parseSI22 ( bytes )
+{
+  let res = { valid: false };
+  return res;
+}
+function parseGM1 ( bytes )
 {
   let res = { valid: false };
   return res;
@@ -305,6 +403,18 @@ function parse( obj )
     //В зависимости от appEui определяем что за устройство
     switch ( appEui )
     {
+      case '7665676173693232':
+      {
+        result.deviceInfo.deviceModel = 'SI_22';
+        parsedDate = parseSI22( bytes );
+        break;
+      }
+      case '76656761474D2D31':
+      {
+        result.deviceInfo.deviceModel = 'GM_1';
+        parsedDate = parseGM1( bytes );
+        break;
+      }
       case '76656761544C3131':
       {
         result.deviceInfo.deviceModel = 'TL_11';
@@ -329,6 +439,12 @@ function parse( obj )
         parsedDate = parseSI13( bytes );
         break;
       }
+      case '3032676173693133':
+      {
+        result.deviceInfo.deviceModel = 'SI_13';
+        parsedDate = parseSI13rev2( bytes );
+        break;
+      }
       case '7665676173693231':
       {
         result.deviceInfo.deviceModel = 'SI_21';
@@ -341,16 +457,34 @@ function parse( obj )
         parsedDate = parseMBUS1( bytes );
         break;
       }
+      case '3032425553203120':
+      {
+        result.deviceInfo.deviceModel = 'M_BUS_1';
+        parsedDate = parseMBUS1rev2( bytes );
+        break;
+      }
       case '4D2D425553203220':
       {
         result.deviceInfo.deviceModel = 'M_BUS_2';
         parsedDate = parseMBUS2( bytes );
         break;
       }
+      case '3032425553203220':
+      {
+        result.deviceInfo.deviceModel = 'M_BUS_2';
+        parsedDate = parseMBUS2rev2( bytes );
+        break;
+      }
       case '7665676174703131':
       {
         result.deviceInfo.deviceModel = 'TP_11';
         parsedDate = parseTP11( bytes );
+        break;
+      }
+      case '3032676174703131':
+      {
+        result.deviceInfo.deviceModel = 'TP_11';
+        parsedDate = parseTP11rev2( bytes );
         break;
       }
       case '7665676174643131':
@@ -379,11 +513,17 @@ function parse( obj )
       }
       case '7665676153454231':
       {
-        result.deviceInfo.deviceModel = 'SEEB_1_SPBZIP';
+        result.deviceInfo.deviceModel = 'SEEB_1_VEGA';
         parsedDate = parseSEEB( bytes );
         break;
       }
       case '5345454220312020':
+      {
+        result.deviceInfo.deviceModel = 'SEEB_1_SPBZIP';
+        parsedDate = parseSEEB( bytes );
+        break;
+      }
+      case '5345454220322020':
       {
         result.deviceInfo.deviceModel = 'SEEB_2_MERCURY';
         parsedDate = parseSEEB( bytes );
@@ -419,7 +559,7 @@ function parse( obj )
         parsedDate = parseSS0101( bytes );
         break;
       }
-      case '7665676153533031':
+      case '76656761204C4D31':
       {
         result.deviceInfo.deviceModel = 'LM_1';
         parsedDate = parseLM1( bytes );
