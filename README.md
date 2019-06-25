@@ -63,7 +63,7 @@ JSON message structure:
 - input3 *- Number of pulses or state*
 - input4 *- Number of pulses or state*
 ##### For SI_13
-- packetType *- possible values: regular, alarm, timeCorrection, settings*
+- packetType *- possible values: regular, alarm, timeCorrection, settings, modBus*
 - battery *- charge battery in %*
 - settings
   - activationType *- Possible values: ABP or OTAA*

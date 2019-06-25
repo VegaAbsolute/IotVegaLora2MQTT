@@ -1,85 +1,128 @@
 const converter = require('./vega_converter.js');
-function parseLM1 ( bytes )
+function parseLM1 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseSS0101 ( bytes )
+function parseSS0101 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseMS0101 ( bytes )
+function parseMS0101 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseAS0101 ( bytes )
+function parseAS0101 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseMC0101 ( bytes )
+function parseMC0101 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseTC11 ( bytes )
+function parseTC11 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseSEEB ( bytes )
+function parseSEEB ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseSVE1 ( bytes )
+function parseSVE1 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseSH1 ( bytes )
+function parseSH1 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseGM2 ( bytes )
+function parseGM2 ( bytes, port )
+{
+  let res = { valid: true };
+  switch ( port )
+  {
+    case 2:
+    {
+      res.packetType = 'regular';
+      res.battery = converter.bytesToInt( [bytes[0]] );
+      res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      res.temperature = converter.bytesToInt( [bytes[5]] );
+      res.reason = converter.bytesToReasonGM2( bytes[6] );
+      res.input1 = converter.byteToBoolean( bytes[7] );
+      res.input2 = converter.byteToBoolean( bytes[8] );
+      res.output1 = converter.byteToBoolean( bytes[9] );
+      res.output2 = converter.byteToBoolean( bytes[10] );
+      res.state_hall = converter.byteToBoolean( bytes[11] );
+      res.state_tamper = converter.byteToBoolean( bytes[12] );
+      res.readings_meter = converter.bytesToFloat( [bytes[13], bytes[14], bytes[15], bytes[16]], 100 );
+      res.initial_readings_meter = converter.bytesToFloat( [bytes[17], bytes[18], bytes[19], bytes[20]], 100 );
+      break;
+    }
+    case 4:
+    {
+      res.packetType = 'timeCorrection';
+      res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      break;
+    }
+    case 3:
+    {
+      res.packetType = 'settings';
+      break;
+    }
+    default:
+    {
+      res.valid = false;
+      break;
+    }
+  }
+  for(var key in res)
+  {
+    if( res[key] === null )
+    {
+      res.valid = false;
+    }
+  }
+  return res;
+}
+function parseTD11 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseTD11 ( bytes )
+function parseTP11 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseTP11 ( bytes )
+function parseTP11rev2 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseTP11rev2 ( bytes )
+function parseMBUS2 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseMBUS2 ( bytes )
+function parseMBUS2rev2 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseMBUS2rev2 ( bytes )
+function parseMBUS1 ( bytes, port )
 {
   let res = { valid: false };
   return res;
 }
-function parseMBUS1 ( bytes )
-{
-  let res = { valid: false };
-  return res;
-}
-function parseMBUS1rev2 ( bytes )
+function parseMBUS1rev2 ( bytes, port )
 {
   let res = { valid: false };
   return res;
