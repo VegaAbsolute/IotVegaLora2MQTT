@@ -364,10 +364,9 @@ function parseSI13rev2 ( bytes, port )
     }
     case 6:
     {
-      //НАДО ДЕЛАТЬ
-      // res.packetType = 'confirmationCommandExecute';
-      // res.commandCode = converter.bytesToInt( [bytes[1]] );
-      // res.pollResult = converter.byteToBoolean( bytes[2]) ? 'success' : 'error';
+      res.packetType = 'modBus';
+      res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      res.data = converter.extractedData( bytes,5 );
       break;
     }
     case 255:
