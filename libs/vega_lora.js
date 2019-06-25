@@ -167,10 +167,12 @@ function parseHS0101( bytes, port )
     {
       res.packetType = 'timeCorrection';
       res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      break;
     }
     case 3:
     {
       res.packetType = 'settings';
+      break;
     }
     default:
     {
@@ -612,7 +614,6 @@ function parse( obj )
       {
         result.deviceInfo.deviceModel = 'SMART_HS_0101';
         parsedDate = parseHS0101( bytes, obj.port );
-        break;
         break;
       }
       default:
