@@ -68,16 +68,53 @@ function parseTC12 ( bytes, port )
       }
       if(res.info_navigation)
       {
-        var latitude = 0;
-        var longitude = 0;
-
+        res.location = {
+          latitude:{},
+          longitude:{}
+        };
+        let degressBitsLat = converter.byteToBits( [bytes[nextByte]] );
+        let senDegressLat = degressBitsLat[7]+degressBitsLat[6]+degressBitsLat[5]+degressBitsLat[4];
+        let junDegressLat = degressBitsLat[3]+degressBitsLat[2]+degressBitsLat[1]+degressBitsLat[0];
+        let degressStrLat = converter.bin2dec(senDegressLat).toString()+converter.bin2dec(junDegressLat).toString();
         nextByte++;
+        let minutesBitsLat = converter.byteToBits( [bytes[nextByte]] );
+        let senMinutesLat = minutesBitsLat[7]+minutesBitsLat[6]+minutesBitsLat[5]+minutesBitsLat[4];
+        let junMinutesLat = minutesBitsLat[3]+minutesBitsLat[2]+minutesBitsLat[1]+minutesBitsLat[0];
+        let minutesStrLat = converter.bin2dec(senMinutesLat).toString()+converter.bin2dec(junMinutesLat).toString();
         nextByte++;
+        let propTenHundMinutesBitsLat = converter.byteToBits( [bytes[nextByte]] );
+        let propTenMinutesLat = propTenHundMinutesBitsLat[7]+propTenHundMinutesBitsLat[6]+propTenHundMinutesBitsLat[5]+propTenHundMinutesBitsLat[4];
+        let propHundMinutesLat = propTenHundMinutesBitsLat[3]+propTenHundMinutesBitsLat[2]+propTenHundMinutesBitsLat[1]+propTenHundMinutesBitsLat[0];
+        let propTenHundMinutesStrLat = converter.bin2dec(propTenMinutesLat).toString()+converter.bin2dec(propHundMinutesLat).toString();
         nextByte++;
+        let propThousCodeMinutesBitsLat = converter.byteToBits( [bytes[nextByte]] );
+        let propThousMinutesLat = propThousCodeMinutesBitsLat[7]+propThousCodeMinutesBitsLat[6]+propThousCodeMinutesBitsLat[5]+propThousCodeMinutesBitsLat[4];
+        let propThousMinutesStrLat = converter.bin2dec(propThousMinutesLat).toString();
+        let codeLat = propThousCodeMinutesBitsLat[0]?'S':'N';
+        let latitude = degressStrLat+'°'+minutesStrLat+propTenHundMinutesStrLat+propThousMinutesStrLat+'\''+' '+codeLat;
+        res.location.latitude = latitude;
         nextByte++;
+        
+        let byte1 = converter.byteToBits( [bytes[nextByte]] );
+        let senDegressLon = byte1[7]+byte1[6]+byte1[5]+byte1[4];
+        let minDegressLon = byte1[3]+byte1[2]+byte1[1]+byte1[0];
         nextByte++;
+        let byte2 = converter.byteToBits( [bytes[nextByte]] );
+        let junDegressLon = byte2[7]+byte2[6]+byte2[5]+byte2[4];
+        let senMinutesLon = byte2[3]+byte2[2]+byte2[1]+byte2[0];
+        let degressStrLon = converter.bin2dec(senDegressLon).toString()+converter.bin2dec(minDegressLon).toString()+converter.bin2dec(junDegressLon).toString();
         nextByte++;
+        let byte3 = converter.byteToBits( [bytes[nextByte]] );
+        let junMinutesLon = byte3[7]+byte3[6]+byte3[5]+byte3[4];
+        let minutesStrLon = converter.bin2dec(senMinutesLon).toString()+converter.bin2dec(junMinutesLon).toString();
+        let propTenMinutesLon = byte3[3]+byte3[2]+byte3[1]+byte3[0];
         nextByte++;
+        let byte4 = converter.byteToBits( [bytes[nextByte]] );
+        let propHundMinutesLon = byte4[7]+byte4[6]+byte4[5]+byte4[4];
+        let propTenHundMinutesStrLon = converter.bin2dec(propTenMinutesLon).toString()+converter.bin2dec(propHundMinutesLon).toString();
+        let codeLon = byte4[0]?'W':'E';
+        let longitude = degressStrLon+'°'+minutesStrLon+propTenHundMinutesStrLon+'\''+' '+codeLon;
+        res.location.longitude = longitude;
         nextByte++;
       }
       if(res.info_counter_uplink)

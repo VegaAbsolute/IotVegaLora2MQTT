@@ -425,6 +425,7 @@ function byteToBits ( byte )
       {
         result.unshift('0');
       }
+      result.reverse();
   }
   catch ( e )
   {
@@ -435,6 +436,13 @@ function byteToBits ( byte )
     return result;
   }
 }
+function bin2dec(num){
+  return num.split('').reverse().reduce(function(x, y, i){
+    return (y === '1') ? x + Math.pow(2, i) : x;
+  }, 0);
+}
+module.exports.bin2dec = bin2dec; 
+module.exports.bytesToReasonGM2 = bytesToReasonGM2;
 module.exports.byteToBits = byteToBits;
 module.exports.bytesToSettingsSI = bytesToSettingsSI;
 module.exports.bytesToIntNegative = bytesToIntNegative;
