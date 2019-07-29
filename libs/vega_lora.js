@@ -29,6 +29,7 @@ function parseTC11 ( bytes, port )
   let res = { valid: false };
   return res;
 }
+
 function parseSEEB ( bytes, port )
 {
   let res = { valid: false };
@@ -42,6 +43,90 @@ function parseSVE1 ( bytes, port )
 function parseSH1 ( bytes, port )
 {
   let res = { valid: false };
+  return res;
+}
+function parseTC12 ( bytes, port )
+{
+  let res = { valid: true };
+  switch ( port )
+  {
+    default:
+    {
+      let statusBits = converter.byteToBits( bytes[0] );
+      res.packetType = statusBits[5] == 1 ? 'pressing_button' : 'automatically';
+      res.info_temperature = statusBits[7] == 1;
+      res.info_navigation = statusBits[4] == 1;
+      res.info_counter_uplink = statusBits[3] == 1;
+      res.info_counter_downlink = statusBits[2] == 1;
+      res.info_battery = statusBits[1] == 1;
+      res.info_RSSI_SNR = statusBits[0] == 1;
+      let nextByte = 1;
+      if(res.info_temperature)
+      {
+        res.temperature = converter.bytesToInt( [bytes[nextByte]] );
+        nextByte++;
+      }
+      if(res.info_navigation)
+      {
+        var latitude = 0;
+        var longitude = 0;
+
+        nextByte++;
+        nextByte++;
+        nextByte++;
+        nextByte++;
+        nextByte++;
+        nextByte++;
+        nextByte++;
+        nextByte++;
+      }
+      if(res.info_counter_uplink)
+      {
+        res.counter_uplink = converter.bytesToInt( [bytes[nextByte]] );
+        nextByte++;
+      }
+      if(res.info_counter_downlink)
+      {
+        res.counter_downlink = converter.bytesToInt( [bytes[nextByte]] );
+        nextByte++;
+      }
+      if(res.info_battery)
+      {
+        var senByte = converter.bytesToInt( [bytes[nextByte]] );
+        nextByte++;
+        var junByte = converter.bytesToInt( [bytes[nextByte]] );
+        nextByte++;
+        res.battery = parseFloat(senByte+'.'+junByte);
+      }
+      if(res.info_RSSI_SNR)
+      {
+        res.rssi = converter.bytesToInt( [bytes[nextByte]] );
+        nextByte++;
+        res.snr = converter.bytesToIntNegative( [bytes[nextByte]] );
+        nextByte++;
+      }
+      // res.battery = converter.bytesToInt( [bytes[0]] );
+      // res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      // res.temperature = converter.bytesToInt( [bytes[5]] );
+      // res.reason = converter.bytesToReasonGM2( bytes[6] );
+      // res.input1 = converter.byteToBoolean( bytes[7] );
+      // res.input2 = converter.byteToBoolean( bytes[8] );
+      // res.output1 = converter.byteToBoolean( bytes[9] );
+      // res.output2 = converter.byteToBoolean( bytes[10] );
+      // res.state_hall = converter.byteToBoolean( bytes[11] );
+      // res.state_tamper = converter.byteToBoolean( bytes[12] );
+      // res.readings_meter = converter.bytesToFloat( [bytes[13], bytes[14], bytes[15], bytes[16]], 100 );
+      // res.initial_readings_meter = converter.bytesToFloat( [bytes[17], bytes[18], bytes[19], bytes[20]], 100 );
+      break;
+    }
+  }
+  for(var key in res)
+  {
+    if( res[key] === null )
+    {
+      res.valid = false;
+    }
+  }
   return res;
 }
 function parseGM2 ( bytes, port )
@@ -614,6 +699,12 @@ function parse( obj )
       {
         result.deviceInfo.deviceModel = 'TC_11';
         parsedDate = parseTC11( bytes, obj.port );
+        break;
+      }
+      case '7665676174733132':
+      {
+        result.deviceInfo.deviceModel = 'TC_12';
+        parsedDate = parseTC12( bytes, obj.port );
         break;
       }
       case '76616D6330313031':

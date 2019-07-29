@@ -409,6 +409,33 @@ function extractedData ( data, before )
     return result;
   }
 }
+function byteToBits ( byte )
+{
+  let result = [];
+  try
+  {
+      let dec = parseInt(byte,16);
+      let binary = dec.toString(2);
+      for( var i = 0; i < binary.length; i++ )
+      {
+        var bit = binary[i];
+        result.push(bit);
+      }
+      while(result.length < 8)
+      {
+        result.unshift('0');
+      }
+  }
+  catch ( e )
+  {
+    return null;
+  }
+  finally
+  {
+    return result;
+  }
+}
+module.exports.byteToBits = byteToBits;
 module.exports.bytesToSettingsSI = bytesToSettingsSI;
 module.exports.bytesToIntNegative = bytesToIntNegative;
 module.exports.bytesToFloatNegative = bytesToFloatNegative;
