@@ -91,8 +91,12 @@ function parseTC12 ( bytes, port )
         let propThousMinutesLat = propThousCodeMinutesBitsLat[7]+propThousCodeMinutesBitsLat[6]+propThousCodeMinutesBitsLat[5]+propThousCodeMinutesBitsLat[4];
         let propThousMinutesStrLat = converter.bin2dec(propThousMinutesLat).toString();
         let codeLat = propThousCodeMinutesBitsLat[0]?'S':'N';
-        let latitude = degressStrLat+'°'+minutesStrLat+propTenHundMinutesStrLat+propThousMinutesStrLat+'\''+' '+codeLat;
-        res.location.latitude = latitude;
+        let latitude = degressStrLat+'°'+minutesStrLat+'.'+propTenHundMinutesStrLat+propThousMinutesStrLat+'\''+' '+codeLat;
+        let latitude2= parseInt(degressStrLat)+(parseFloat(minutesStrLat+'.'+propTenHundMinutesStrLat+propThousMinutesStrLat)/60);
+        latitude2 = Math.round(latitude2*100000)/100000;
+        res.location.latitude.format1 = latitude;
+        res.location.latitude.format2 = latitude2;
+        
         nextByte++;
         
         let byte1 = converter.byteToBits( [bytes[nextByte]] );
@@ -113,8 +117,11 @@ function parseTC12 ( bytes, port )
         let propHundMinutesLon = byte4[7]+byte4[6]+byte4[5]+byte4[4];
         let propTenHundMinutesStrLon = converter.bin2dec(propTenMinutesLon).toString()+converter.bin2dec(propHundMinutesLon).toString();
         let codeLon = byte4[0]?'W':'E';
-        let longitude = degressStrLon+'°'+minutesStrLon+propTenHundMinutesStrLon+'\''+' '+codeLon;
-        res.location.longitude = longitude;
+        let longitude = degressStrLon+'°'+minutesStrLon+'.'+propTenHundMinutesStrLon+'\''+' '+codeLon;
+        let longitude2= parseInt(degressStrLon)+(parseFloat(minutesStrLon+'.'+propTenHundMinutesStrLon)/60);
+        longitude2 = Math.round(longitude2*100000)/100000;
+        res.location.longitude.format1 = longitude;
+        res.location.longitude.format2 = longitude2;
         nextByte++;
       }
       if(res.info_counter_uplink)
