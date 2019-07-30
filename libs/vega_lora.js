@@ -96,6 +96,7 @@ function parseTC12 ( bytes, port )
         latitude2 = Math.round(latitude2*100000)/100000;
         res.location.latitude.format1 = latitude;
         res.location.latitude.format2 = latitude2;
+        if(codeLat=='N') latitude2 = latitude2*-1;
         
         nextByte++;
         
@@ -120,6 +121,7 @@ function parseTC12 ( bytes, port )
         let longitude = degressStrLon+'°'+minutesStrLon+'.'+propTenHundMinutesStrLon+'\''+' '+codeLon;
         let longitude2= parseInt(degressStrLon)+(parseFloat(minutesStrLon+'.'+propTenHundMinutesStrLon)/60);
         longitude2 = Math.round(longitude2*100000)/100000;
+        if(codeLon=='E') longitude2 = longitude2*-1;
         res.location.longitude.format1 = longitude;
         res.location.longitude.format2 = longitude2;
         nextByte++;
@@ -136,11 +138,10 @@ function parseTC12 ( bytes, port )
       }
       if(res.info_battery)
       {
-        var senByte = converter.bytesToInt( [bytes[nextByte]] );
+        var senByte = parseInt(bytes[nextByte]+bytes[nextByte+1],16);
         nextByte++;
-        var junByte = converter.bytesToInt( [bytes[nextByte]] );
         nextByte++;
-        res.battery = parseFloat(senByte+'.'+junByte);
+        res.battery = parseFloat(senByte);
       }
       if(res.info_RSSI_SNR)
       {
