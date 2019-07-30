@@ -18,6 +18,7 @@ Applications for receiving data from the IotVega server, parse data and sending 
 - SI-13
 - SMART HS-0101
 - GM-2
+- TC-12
 ## Message structure Description
 #### Topics
 - /IotVegaServer/# - All messages from the application Iotvega Lora2mqtt
@@ -119,6 +120,28 @@ JSON message structure:
 - state_tamper *- state tamper*
 - readings_meter *- readings meter*
 - initial_readings_meter *- initial readings meter*
+##### For TC_12
+- packetType *- possible values: pressing_button, automatically*
+- info_temperature *- presence temperature info*
+- info_navigation *- presence navigation data*
+- info_counter_uplink *- presence counter uplink*
+- info_counter_downlink *- presence counter downlink*
+- info_battery *- presence battery info*
+- info_RSSI_SNR *- presence RSSI and SNR info*
+- temperature *- Temperature inside the case in degrees Celsius*
+- location
+  - latitude
+    - format1 *- latitude in the format: DD°MM.MMM' C, where C - code latitude(N/S)*
+    - format2 *- latitude in the format: DD.DDDDDD*
+  - longitude
+    - format1 *- longitude in the format: DDD°MM.MM' C, where C - code longitude(W/E)*
+    - format2 *- longitude in the format: DD.DDDDDD*
+- counter_uplink *- counter of uplink send*
+- counter_downlink *- counter of downlink received*
+- battery *- charge battery in mB*
+- rssi *- absolute value RSSI in dBm*
+- snr *- value SNR in dB*
+
 ## Possible device models
 - TL_11
 - SI_12
@@ -142,5 +165,6 @@ JSON message structure:
 - LM_1
 - SI_22
 - GM_1
+- TC_12
 - SMART_HS_0101
 > unknown - If the device model could not be determined

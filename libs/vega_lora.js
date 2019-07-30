@@ -93,7 +93,7 @@ function parseTC12 ( bytes, port )
         let codeLat = propThousCodeMinutesBitsLat[0]?'S':'N';
         let latitude = degressStrLat+'°'+minutesStrLat+'.'+propTenHundMinutesStrLat+propThousMinutesStrLat+'\''+' '+codeLat;
         let latitude2= parseInt(degressStrLat)+(parseFloat(minutesStrLat+'.'+propTenHundMinutesStrLat+propThousMinutesStrLat)/60);
-        latitude2 = Math.round(latitude2*100000)/100000;
+        latitude2 = Math.round(latitude2*1000000)/1000000;
         res.location.latitude.format1 = latitude;
         res.location.latitude.format2 = latitude2;
         if(codeLat=='N') latitude2 = latitude2*-1;
@@ -120,7 +120,7 @@ function parseTC12 ( bytes, port )
         let codeLon = byte4[0]?'W':'E';
         let longitude = degressStrLon+'°'+minutesStrLon+'.'+propTenHundMinutesStrLon+'\''+' '+codeLon;
         let longitude2= parseInt(degressStrLon)+(parseFloat(minutesStrLon+'.'+propTenHundMinutesStrLon)/60);
-        longitude2 = Math.round(longitude2*100000)/100000;
+        longitude2 = Math.round(longitude2*1000000)/1000000;
         if(codeLon=='E') longitude2 = longitude2*-1;
         res.location.longitude.format1 = longitude;
         res.location.longitude.format2 = longitude2;
@@ -150,18 +150,6 @@ function parseTC12 ( bytes, port )
         res.snr = converter.bytesToIntNegative( [bytes[nextByte]] );
         nextByte++;
       }
-      // res.battery = converter.bytesToInt( [bytes[0]] );
-      // res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
-      // res.temperature = converter.bytesToInt( [bytes[5]] );
-      // res.reason = converter.bytesToReasonGM2( bytes[6] );
-      // res.input1 = converter.byteToBoolean( bytes[7] );
-      // res.input2 = converter.byteToBoolean( bytes[8] );
-      // res.output1 = converter.byteToBoolean( bytes[9] );
-      // res.output2 = converter.byteToBoolean( bytes[10] );
-      // res.state_hall = converter.byteToBoolean( bytes[11] );
-      // res.state_tamper = converter.byteToBoolean( bytes[12] );
-      // res.readings_meter = converter.bytesToFloat( [bytes[13], bytes[14], bytes[15], bytes[16]], 100 );
-      // res.initial_readings_meter = converter.bytesToFloat( [bytes[17], bytes[18], bytes[19], bytes[20]], 100 );
       break;
     }
   }
