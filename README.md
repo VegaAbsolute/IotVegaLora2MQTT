@@ -7,7 +7,7 @@ Applications for receiving data from the IotVega server, parse data and sending 
 - Install the Nodejs Application Task Manager PM2 `npm install pm2 -g`
 #### Installing and running the application
 - Make a clone of the repository IotVegaLora2MQTT `git clone https://github.com/VegaAbsolute/IotVegaLora2MQTT.git`
-- Go to the Applications folder IotVegaLora2MQTT `cd IotVegaLora2MQTT` or for windows `dir IotVegaLora2MQTT`
+- Go to the Applications folder IotVegaLora2MQTT `cd IotVegaLora2MQTT`
 - Running the application `pm2 start npm -- start`
 - Configure IotVegaLora2MQTT. Edit the config.ini file.
 - Restart the application so that the settings are applied `pm2 restart 0`
