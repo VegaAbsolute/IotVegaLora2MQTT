@@ -350,6 +350,56 @@ function parseHS0101( bytes, port )
   }
   return res;
 }
+function parseVegaLock( bytes, port )
+{
+  // typedef __packed struct lora_params_t {
+  //   uint8_t  id          = LORA_ID_PARAMS; // LORA_ID_PARAMS = 1
+  //   uint8_t  state       = 0;              // состояние замка (0-закрыт/1-открыт)
+  //   uint8_t  alarm       = 0;              // тревога
+  //   uint8_t  battery     = 0;              // заряд АКБ (%)
+  //   uint16_t voltage     = 0;              // value*100 (v)
+  //   int16_t  temperature = 0;              // value*100 (C°)
+  // } lora_params_s;
+  let res = { valid: true };
+  switch ( port )
+  {
+    case 2:
+    {
+      res.packetType = 'regular';
+      res.lora_id_params = converter.bytesToInt( [bytes[0]] );
+      res.state_lock = converter.byteToBoolean( bytes[1] );
+      res.state_alarm = converter.byteToBoolean( bytes[2] );
+      res.battery = converter.bytesToInt( [bytes[3]] );
+      res.voltage = converter.bytesToFloatNegative( [bytes[4],bytes[5]], 100 );
+      res.temperature = converter.bytesToFloatNegative( [bytes[6],bytes[7]], 100 );
+      break;
+    }
+    case 4:
+    {
+      res.packetType = 'timeCorrection';
+      res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      break;
+    }
+    case 3:
+    {
+      res.packetType = 'settings';
+      break;
+    }
+    default:
+    {
+      res.valid = false;
+      break;
+    }
+  }
+  for(var key in res)
+  {
+    if( res[key] === null )
+    {
+      res.valid = false;
+    }
+  }
+  return res;
+}
 function parseGPNPUMP( bytes, port )
 {
   let res = { valid: true };
@@ -780,6 +830,12 @@ function parse( obj )
       {
         result.deviceInfo.deviceModel = 'SMART_HS_0101';
         parsedDate = parseHS0101( bytes, obj.port );
+        break;
+      }
+      case '766567616C6F636B':
+      {
+        result.deviceInfo.deviceModel = 'VEGALOCK';
+        parsedDate = parseVegaLock( bytes, obj.port );
         break;
       }
       default:
