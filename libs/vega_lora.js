@@ -247,7 +247,6 @@ function parseMBUS1rev2 ( bytes, port )
 }
 function parseVegaSmoke2 ( bytes, port )
 {
-  console.log('parseVegaSmoke2', bytes, port);
   let res = { valid:true };
   res.packetType = 'unknown';
   switch ( port )
@@ -301,7 +300,6 @@ function parseVegaSmoke2 ( bytes, port )
       res.valid = false;
     }
   }
-  console.log('res',res);
 
   return res;
 }
