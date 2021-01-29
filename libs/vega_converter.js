@@ -7,6 +7,172 @@ function stringToBytes( str )
   }
   return bytes;
 }
+function bytesToTypeVegaSmoke2 ( byte )
+{
+  try
+  {
+    if( byte !== undefined)
+    {
+      let reason = parseInt( byte );
+      switch ( reason )
+      {
+        // case 1:
+        // {
+        //   return 'by_time';
+        //   break;
+        // }
+        // case 2:
+        // {
+        //   return 'vibration_alarm';
+        //   break;
+        // }
+        // case 3:
+        // {
+        //   return 'temperature_alarm';
+        //   break;
+        // }
+        // case 4:
+        // {
+        //   return 'voltage_status';
+        //   break;
+        // }
+        case 5:
+        {
+          return 'alarm_fire';
+          break;
+        }
+        case 6:
+        {
+          return 'alarm_test';
+          break;
+        }
+        case 7:
+        {
+          return 'alarm_common';
+          break;
+        }
+        case 8:
+        {
+          return 'alarm_detach';
+          break;
+        }
+        case 9:
+        {
+          return 'alarm_stop';
+          break;
+        }
+        case 10:
+        {
+          return 'alarm_low_bat';
+          break;
+        }
+        case 11:
+        {
+          return 'guard_start';
+          break;
+        }
+        case 12:
+        {
+          return 'guard_stop';
+          break;
+        }
+        case 13:
+        {
+          return 'guard_off';
+          break;
+        }
+        case 14:
+        {
+          return 'status_fault';
+          break;
+        }
+        case 15:
+        {
+          return 'status_fog';
+          break;
+        }
+        case 16:
+        {
+          return 'force';
+          break;
+        }
+        default:
+        {
+          return null;
+          break;
+        }
+      }
+    }
+    return null;
+  }
+  catch ( e )
+  {
+    return null;
+  }
+}
+function bytesToStatusVegaSmoke2 ( byte )
+{
+  try
+  {
+    if( byte !== undefined)
+    {
+      let reason = parseInt( byte );
+      switch ( reason )
+      {
+        case 0:
+        {
+          return 'fog';
+          break;
+        }
+        case 1:
+        {
+          return 'fire';
+          break;
+        }
+        case 2:
+        {
+          return 'test';
+          break;
+        }
+        case 3:
+        {
+          return 'guard';
+          break;
+        }
+        case 4:
+        {
+          return 'fault';
+          break;
+        }
+        case 5:
+        {
+          return 'alarm';
+          break;
+        }
+        case 6:
+        {
+          return 'detach';
+          break;
+        }
+        case 6:
+        {
+          return 'common';
+          break;
+        }
+        default:
+        {
+          return null;
+          break;
+        }
+      }
+    }
+    return null;
+  }
+  catch ( e )
+  {
+    return null;
+  }
+}
 function bytesToReasonGPNPUMP ( byte )
 {
   try
@@ -441,6 +607,8 @@ function bin2dec(num){
     return (y === '1') ? x + Math.pow(2, i) : x;
   }, 0);
 }
+module.exports.bytesToTypeVegaSmoke2 = bytesToTypeVegaSmoke2;
+module.exports.bytesToStatusVegaSmoke2 = bytesToStatusVegaSmoke2;
 module.exports.bin2dec = bin2dec; 
 module.exports.bytesToReasonGM2 = bytesToReasonGM2;
 module.exports.byteToBits = byteToBits;
