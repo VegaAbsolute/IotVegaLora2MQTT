@@ -110,69 +110,6 @@ function bytesToTypeVegaSmoke2 ( byte )
     return null;
   }
 }
-function bytesToStatusVegaSmoke2 ( byte )
-{
-  try
-  {
-    if( byte !== undefined)
-    {
-      let reason = parseInt( byte );
-      switch ( reason )
-      {
-        case 0:
-        {
-          return 'fog';
-          break;
-        }
-        case 1:
-        {
-          return 'fire';
-          break;
-        }
-        case 2:
-        {
-          return 'test';
-          break;
-        }
-        case 3:
-        {
-          return 'guard';
-          break;
-        }
-        case 4:
-        {
-          return 'fault';
-          break;
-        }
-        case 5:
-        {
-          return 'alarm';
-          break;
-        }
-        case 6:
-        {
-          return 'detach';
-          break;
-        }
-        case 6:
-        {
-          return 'common';
-          break;
-        }
-        default:
-        {
-          return null;
-          break;
-        }
-      }
-    }
-    return null;
-  }
-  catch ( e )
-  {
-    return null;
-  }
-}
 function bytesToReasonGPNPUMP ( byte )
 {
   try
@@ -608,7 +545,6 @@ function bin2dec(num){
   }, 0);
 }
 module.exports.bytesToTypeVegaSmoke2 = bytesToTypeVegaSmoke2;
-module.exports.bytesToStatusVegaSmoke2 = bytesToStatusVegaSmoke2;
 module.exports.bin2dec = bin2dec; 
 module.exports.bytesToReasonGM2 = bytesToReasonGM2;
 module.exports.byteToBits = byteToBits;

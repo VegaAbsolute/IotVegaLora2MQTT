@@ -247,8 +247,9 @@ function parseMBUS1rev2 ( bytes, port )
 }
 function parseVegaSmoke2 ( bytes, port )
 {
+  console.log('parseVegaSmoke2', bytes, port);
   let res = { valid:true };
-  res.packetType = parseInt( bytes[0], 16 );
+  res.packetType = 'unknown';
   switch ( port )
   {
     case 3:
@@ -265,7 +266,8 @@ function parseVegaSmoke2 ( bytes, port )
     {
       res.packetType = converter.bytesToTypeVegaSmoke2( bytes[0] );
       res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
-      res.status = converter.bytesToStatusVegaSmoke2( bytes[5] );
+      let statusBits = converter.byteToBits( bytes[5] );
+  // // statusBits[1] == 1;
       res.voltage_mV = converter.bytesToInt( [ bytes[6], bytes[7] ] );
       res.current_mA = converter.bytesToInt( [ bytes[8], bytes[9] ] );
       res.temperature_degC = converter.bytesToIntNegative( [ bytes[10], bytes[11] ] );
@@ -274,6 +276,15 @@ function parseVegaSmoke2 ( bytes, port )
       res.battery_persent_1 = converter.byteToBoolean( bytes[14] );
       res.battery_persent_2 = converter.byteToBoolean( bytes[15] );
       res.battery = converter.bytesToInt( [bytes[16]] );
+    
+      res.status_fog = statusBits[0] == 1;
+      res.status_fire = statusBits[1] == 1;
+      res.status_test = statusBits[2] == 1;
+      res.status_guard = statusBits[3] == 1;
+      res.status_fault = statusBits[4] == 1;
+      res.status_alarm = statusBits[5] == 1;
+      res.status_detach = statusBits[6] == 1;
+      res.status_common = statusBits[7] == 1;
       break;
     }
     default:
@@ -282,6 +293,7 @@ function parseVegaSmoke2 ( bytes, port )
       break;
     }
   }
+  
   for(var key in res)
   {
     if( res[key]===null)
@@ -289,6 +301,8 @@ function parseVegaSmoke2 ( bytes, port )
       res.valid = false;
     }
   }
+  console.log('res',res);
+
   return res;
 }
 function parseSI11_SI21 ( bytes, port )
