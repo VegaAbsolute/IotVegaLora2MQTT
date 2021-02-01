@@ -9,11 +9,13 @@ function stringToBytes( str )
 }
 function bytesToTypeVegaSmoke2 ( byte )
 {
+  console.log('bytesToTypeVegaSmoke2', byte);
   try
   {
     if( byte !== undefined)
     {
-      let reason = parseInt( byte );
+      let reason = parseInt( byte,16 );
+      console.log('bytesToTypeVegaSmoke2 reason', reason);
       switch ( reason )
       {
         // case 1:
@@ -116,7 +118,7 @@ function bytesToReasonGPNPUMP ( byte )
   {
     if( byte !== undefined)
     {
-      let reason = parseInt( byte );
+      let reason = parseInt( byte,16 );
       switch ( reason )
       {
         case 1:
@@ -169,7 +171,7 @@ function bytesToReasonGM2 ( byte )
   {
     if( byte !== undefined)
     {
-      let reason = parseInt( byte );
+      let reason = parseInt( byte,16 );
       switch ( reason )
       {
         case 0:
@@ -227,7 +229,7 @@ function bytesToReasonHS0101 ( byte )
   {
     if( byte !== undefined)
     {
-      let reason = parseInt( byte );
+      let reason = parseInt( byte,16 );
       switch ( reason )
       {
         case 1:
