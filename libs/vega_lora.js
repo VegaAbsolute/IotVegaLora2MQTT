@@ -297,7 +297,6 @@ function parseVegaSmoke2 ( bytes, port )
   {
     if( res[key]===null)
     {
-      console.log(key);
       res.valid = false;
     }
   }

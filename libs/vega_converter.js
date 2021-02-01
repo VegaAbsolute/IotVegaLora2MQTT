@@ -9,13 +9,11 @@ function stringToBytes( str )
 }
 function bytesToTypeVegaSmoke2 ( byte )
 {
-  console.log('bytesToTypeVegaSmoke2', byte);
   try
   {
     if( byte !== undefined)
     {
       let reason = parseInt( byte,16 );
-      console.log('bytesToTypeVegaSmoke2 reason', reason);
       switch ( reason )
       {
         // case 1:
