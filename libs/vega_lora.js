@@ -302,6 +302,15 @@ function parseSS0102 ( bytes, port )
       break;
     }
   }
+  for(var key in res)
+  {
+    if( res[key]===null)
+    {
+      res.valid = false;
+    }
+  }
+
+  return res;
 }
 function parseVegaSmoke2 ( bytes, port )
 {
