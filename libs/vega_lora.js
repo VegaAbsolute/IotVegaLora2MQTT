@@ -276,7 +276,6 @@ function parseSS0102 ( bytes, port )
       res.packetType = converter.bytesToTypeVegaSmoke2( bytes[0] );
       res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
       let statusBits = converter.byteToBits( bytes[5] );
-  // // statusBits[1] == 1;
       res.voltage_mV = converter.bytesToInt( [ bytes[6], bytes[7] ] );
       res.current_mA = converter.bytesToInt( [ bytes[8], bytes[9] ] );
       res.temperature_degC = converter.bytesToIntNegative( [ bytes[10], bytes[11] ] );
@@ -302,6 +301,7 @@ function parseSS0102 ( bytes, port )
       res.valid = false;
       break;
     }
+  }
 }
 function parseVegaSmoke2 ( bytes, port )
 {
@@ -954,16 +954,16 @@ function parse( obj )
         parsedDate = parseVegaLock( bytes, obj.port );
         break;
       }
-      case '7665676153533033':
-      {
-        result.deviceInfo.deviceModel = 'VEGA_SMOKE_2';
-        parsedDate = parseVegaSmoke2( bytes, obj.port );
-        break;
-      }
       case '7665676153533032':
       {
         result.deviceInfo.deviceModel = 'SMART_SS_0102';
         parsedDate = parseSS0102( bytes, obj.port );
+        break;
+      }
+      case '7665676153533033':
+      {
+        result.deviceInfo.deviceModel = 'VEGA_SMOKE_2';
+        parsedDate = parseVegaSmoke2( bytes, obj.port );
         break;
       }
       default:
@@ -995,4 +995,5 @@ function parse( obj )
     return result;
   }
 }
+
 module.exports.parse = parse;
