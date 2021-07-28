@@ -19,6 +19,7 @@ Applications for receiving data from the IotVega server, parse data and sending 
 - SMART HS-0101
 - GM-2
 - TC-12
+- SMART SS-0102
 ## Message structure Description
 #### Topics
 - /IotVegaServer/# - All messages from the application Iotvega Lora2mqtt
@@ -64,6 +65,27 @@ JSON message structure:
 - input2 *- Number of pulses or state*
 - input3 *- Number of pulses or state*
 - input4 *- Number of pulses or state*
+##### For SMART_SS_0102
+- packetType *- possible values: settings,timeCorrection,info,diagnostic,alarm_fire,alarm_test,alarm_common,alarm_detach,alarm_stop,alarm_low_bat,guard_start,guard_stop,guard_off,status_fault,status_fog,force*
+- time *- Unix timestamp*
+- voltage_mV *- Voltage inside the case in mV*
+- current_mA *- mA*
+- temperature_degC *- Temperature inside the case in degrees Celsius*
+- battery_select_1 *- battery select 1, boolean*
+- battery_select_2 *- battery select 2, boolean*
+- battery_persent_1 *- battery persent 1, boolean*
+- battery_persent_2 *- battery persent 2, boolean*
+- battery *- charge battery 1 in %*
+- battery2 *- charge battery 2 in %*
+- status_fog *- status fog, boolean*
+- status_fire *- status fire, boolean*
+- status_test *- status test, boolean*
+- status_guard *- status guard, boolean*
+- status_fault *- status fault, boolean*
+- status_alarm *- status alarm, boolean*
+- status_detach *- status detach, boolean*
+- status_common *- status common, boolean*
+
 ##### For SI_13
 - packetType *- possible values: regular, alarm, timeCorrection, settings, modBus*
 - battery *- charge battery in %*
@@ -167,4 +189,5 @@ JSON message structure:
 - GM_1
 - TC_12
 - SMART_HS_0101
+- SMART_SS_0102
 > unknown - If the device model could not be determined

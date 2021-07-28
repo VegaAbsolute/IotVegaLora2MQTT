@@ -245,6 +245,64 @@ function parseMBUS1rev2 ( bytes, port )
   let res = { valid: false };
   return res;
 }
+function parseSS0102 ( bytes, port )
+{
+  let res = { valid:true };
+  res.packetType = 'unknown';
+  switch ( port )
+  {
+    case 3:
+    {
+      res.packetType = 'settings';
+      break;
+    }
+    case 4:
+    {
+      res.packetType = 'timeCorrection';
+      break;
+    }
+    case 195:
+    {
+      res.packetType = 'info';
+      break;
+    }
+    case 85:
+    {
+      res.packetType = 'diagnostic';
+      break;
+    }
+    case 2:
+    {
+      res.packetType = converter.bytesToTypeVegaSmoke2( bytes[0] );
+      res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      let statusBits = converter.byteToBits( bytes[5] );
+  // // statusBits[1] == 1;
+      res.voltage_mV = converter.bytesToInt( [ bytes[6], bytes[7] ] );
+      res.current_mA = converter.bytesToInt( [ bytes[8], bytes[9] ] );
+      res.temperature_degC = converter.bytesToIntNegative( [ bytes[10], bytes[11] ] );
+      res.battery_select_1 = converter.byteToBoolean( bytes[12] );
+      res.battery_select_2 = converter.byteToBoolean( bytes[13] );
+      res.battery_persent_1 = converter.byteToBoolean( bytes[14] );
+      res.battery_persent_2 = converter.byteToBoolean( bytes[15] );
+      res.battery = converter.bytesToInt( [bytes[16]] );
+      res.battery2 = converter.bytesToInt( [bytes[17]] );
+    
+      res.status_fog = statusBits[0] == 1;
+      res.status_fire = statusBits[1] == 1;
+      res.status_test = statusBits[2] == 1;
+      res.status_guard = statusBits[3] == 1;
+      res.status_fault = statusBits[4] == 1;
+      res.status_alarm = statusBits[5] == 1;
+      res.status_detach = statusBits[6] == 1;
+      res.status_common = statusBits[7] == 1;
+      break;
+    }
+    default:
+    {
+      res.valid = false;
+      break;
+    }
+}
 function parseVegaSmoke2 ( bytes, port )
 {
   let res = { valid:true };
@@ -900,6 +958,12 @@ function parse( obj )
       {
         result.deviceInfo.deviceModel = 'VEGA_SMOKE_2';
         parsedDate = parseVegaSmoke2( bytes, obj.port );
+        break;
+      }
+      case '7665676153533032':
+      {
+        result.deviceInfo.deviceModel = 'SMART_SS_0102';
+        parsedDate = parseSS0102( bytes, obj.port );
         break;
       }
       default:
