@@ -427,6 +427,63 @@ function parseSI11_SI21 ( bytes, port )
   }
   return res;
 }
+function parseSI12 ( bytes, port )
+{
+  let res = { valid:true };
+  res.packetType = parseInt( bytes[0], 16 );
+  switch ( res.packetType )
+  {
+    case 0:
+    {
+      if( port == 3 ) res.packetType = 'settings';
+      break;
+    }
+    case 1:
+    {
+      res.packetType = 'regular';
+      res.battery = converter.bytesToInt( [bytes[1]] );
+      res.settings = converter.bytesToSettingsSI( bytes[2] );
+      res.time = converter.bytesToInt( [bytes[3], bytes[4], bytes[5], bytes[6]] );
+      res.temperature = converter.bytesToInt( [bytes[7]] );
+      res.input1 = converter.bytesToInt( [bytes[8], bytes[9], bytes[10], bytes[11]] );
+      res.input2 = converter.bytesToInt( [bytes[12], bytes[13], bytes[14], bytes[15]] );
+      res.input3 = converter.bytesToInt( [bytes[16], bytes[17], bytes[18], bytes[19]] );
+      res.input4 = converter.bytesToInt( [bytes[20], bytes[21], bytes[22], bytes[23]] );
+      break;
+    }
+    case 2:
+    {
+      res.packetType = 'alarm';
+      res.battery = converter.bytesToInt( [bytes[1]] );
+      res.settings = converter.bytesToSettingsSI( bytes[2] );
+      res.alarmOnInput = converter.bytesToInt( [bytes[3]] );
+      res.input1 = converter.bytesToInt( [bytes[4], bytes[5], bytes[6], bytes[7]] );
+      res.input2 = converter.bytesToInt( [bytes[8], bytes[9], bytes[10], bytes[11]] );
+      res.input3 = converter.bytesToInt( [bytes[12], bytes[13], bytes[14], bytes[15]] );
+      res.input4 = converter.bytesToInt( [bytes[16], bytes[17], bytes[18], bytes[19]] );
+      break;
+    }
+    case 255:
+    {
+      res.packetType = 'timeCorrection';
+      res.time = converter.bytesToInt( [bytes[1], bytes[2], bytes[3], bytes[4]] );
+      break;
+    }
+    default:
+    {
+      res.valid = false;
+      break;
+    }
+  }
+  for(var key in res)
+  {
+    if( res[key]===null)
+    {
+      res.valid = false;
+    }
+  }
+  return res;
+}
 function parseHS0101( bytes, port )
 {
   let res = { valid: true };
@@ -724,11 +781,6 @@ function parseSI13rev2 ( bytes, port )
       res.valid = false;
     }
   }
-  return res;
-}
-function parseSI12 ( bytes, port )
-{
-  let res = { valid: false };
   return res;
 }
 function parseTL11 ( bytes, port )
