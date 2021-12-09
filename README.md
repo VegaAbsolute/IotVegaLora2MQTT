@@ -15,6 +15,7 @@ Applications for receiving data from the IotVega server, parse data and sending 
 ## Supported Devices Lora2MQTT
 - SI-11
 - SI-21
+- SI-12
 - SI-13
 - SMART HS-0101
 - GM-2
@@ -50,6 +51,22 @@ JSON message structure:
   - *The data that was able to parse the application. The set is different for each device model. More structure devicePayload Look in section - "Possible structures devicePayload"*
 ##### Possible structures devicePayload
 ##### For SI_11 or SI_21
+- packetType *- possible values: regular, alarm, timeCorrection, settings*
+- battery *- charge battery in %*
+- settings
+  - activationType *- Possible values: ABP or OTAA*
+  - periodConnectInMinutes *- In minutes*
+  - input1Type *- Passible values: security or pulse*
+  - input2Type *- Passible values: security or pulse*
+  - input3Type *- Passible values: security or pulse*
+  - input4Type *- Passible values: security or pulse*
+- time *- Unix timestamp*
+- temperature *- Temperature inside the case in degrees Celsius*
+- input1 *- Number of pulses or state*
+- input2 *- Number of pulses or state*
+- input3 *- Number of pulses or state*
+- input4 *- Number of pulses or state*
+- ##### For SI_12
 - packetType *- possible values: regular, alarm, timeCorrection, settings*
 - battery *- charge battery in %*
 - settings
